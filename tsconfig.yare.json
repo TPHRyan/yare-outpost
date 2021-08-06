@@ -1,0 +1,15 @@
+{
+  "extends": "tsconfig.json",
+  "compilerOptions": {
+	"sourceRoot": ".",
+	"baseUrl": ".",
+	"typeRoots": [
+	  "./@types"
+	],
+	"types": ["yare-io"]
+  },
+  "include": [
+	"var/code/**/*.ts"
+  ],
+  "exclude": ["node_modules"]
+}

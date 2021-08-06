@@ -5,9 +5,13 @@
     "target": "ESNext",
     "sourceMap": true,
 	"strict": true,
-	"esModuleInterop": true
+	"esModuleInterop": true,
+	"rootDir": ".",
+	"baseUrl": "."
   },
+  "include": ["src/**/*.ts"],
   "exclude": [
-    "node_modules"
+    "node_modules",
+	"var"
   ]
 }
