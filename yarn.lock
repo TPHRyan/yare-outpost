@@ -981,6 +981,15 @@ resolve@^1.17.0:
   languageName: node
   linkType: hard
 
+"rxjs@npm:^7.3.0":
+  version: 7.3.0
+  resolution: "rxjs@npm:7.3.0"
+  dependencies:
+    tslib: ~2.1.0
+  checksum: e63adb8808ea6c299a020d56d2af92bcf71efe641adf838499932e29b8f5fd5ff00873653ad48ba3ecf6c9fc11c3c595acf995e8d456f9d8cb85c7d37a1fd72e
+  languageName: node
+  linkType: hard
+
 "safe-buffer@npm:~5.1.0, safe-buffer@npm:~5.1.1":
   version: 5.1.2
   resolution: "safe-buffer@npm:5.1.2"
@@ -1186,6 +1195,13 @@ resolve@^1.17.0:
   languageName: node
   linkType: hard
 
+"tslib@npm:~2.1.0":
+  version: 2.1.0
+  resolution: "tslib@npm:2.1.0"
+  checksum: aa189c8179de0427b0906da30926fd53c59d96ec239dff87d6e6bc831f608df0cbd6f77c61dabc074408bd0aa0b9ae4ec35cb2c15f729e32f37274db5730cb78
+  languageName: node
+  linkType: hard
+
 typescript@^4.3.5:
   version: 4.3.5
   resolution: "typescript@npm:4.3.5"
@@ -1293,6 +1309,7 @@ typescript@^4.3.5:
     io-ts: ^2.2.16
     prettier: ^2.3.2
     rollup: ^2.55.1
+    rxjs: ^7.3.0
     ts-node: ^10.1.0
     tslib: ^2.3.0
     typescript: ^4.3.5

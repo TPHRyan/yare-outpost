@@ -2,9 +2,9 @@ import process from "process";
 
 import chalk from "chalk";
 
-import { CodeWatcher, startWatcher } from "./bundler";
 import { configure, ConnectionConfig } from "./config";
 import { YareServer } from "./yare/server";
+import { CodeWatcher, watchCode } from "./watcher";
 
 async function waitForTermination(
 	server: YareServer<string, string>,
@@ -41,10 +41,13 @@ async function initWatcher<Domain extends string, Server extends string>(
 	_server: YareServer<Domain, Server>,
 ): Promise<CodeWatcher> {
 	console.log(chalk.greenBright("Starting watcher..."));
-	const watcher = startWatcher(entrypoint);
-	watcher.on("generate", (code) => console.log(`Generated code:\n${code}`));
-	watcher.on("close", () => console.log("Watcher closed."));
-	return watcher;
+	const codeWatcher = watchCode(entrypoint);
+	codeWatcher.code$.subscribe({
+		next: (code) => console.log(`Generated code:\n${code}`),
+		error: (err) => console.log(err),
+		complete: () => console.log("Watcher closed."),
+	});
+	return codeWatcher;
 }
 
 async function serve(): Promise<string> {
