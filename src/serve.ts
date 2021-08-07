@@ -35,9 +35,10 @@ async function serve(): Promise<string | void> {
 	if (gameIds.length > 0) {
 		const gameId = gameIds[0];
 		console.log(chalk.greenBright(`Connecting to game ${gameId}...`));
-		server.subscribe(gameId, "message", (data) =>
-			console.log(JSON.stringify(data)),
-		);
+
+		// TODO: Add watch process here
+		console.log("Would start watching for code here!");
+
 		return await waitForTermination(server);
 	}
 

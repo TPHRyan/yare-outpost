@@ -35,6 +35,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         [null, {
           "packageLocation": "./",
           "packageDependencies": [
+            ["@rollup/plugin-typescript", "virtual:74b5a9eea75986763aca1137f73c1df04b353154dbdff7f54ba3c8c3904b261a28558bf4e1e4d92cd69a69fae74e7287157693de1ea536b2c98e61b760860354#npm:8.2.5"],
             ["@types/node", "npm:16.4.12"],
             ["@types/ws", "npm:7.4.7"],
             ["axios", "npm:0.21.1"],
@@ -44,6 +45,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["prettier", "npm:2.3.2"],
             ["rollup", "npm:2.55.1"],
             ["ts-node", "virtual:74b5a9eea75986763aca1137f73c1df04b353154dbdff7f54ba3c8c3904b261a28558bf4e1e4d92cd69a69fae74e7287157693de1ea536b2c98e61b760860354#npm:10.1.0"],
+            ["tslib", "npm:2.3.0"],
             ["typescript", "patch:typescript@npm%3A4.3.5#~builtin<compat/typescript>::version=4.3.5&hash=d8b4e7"],
             ["ws", "virtual:74b5a9eea75986763aca1137f73c1df04b353154dbdff7f54ba3c8c3904b261a28558bf4e1e4d92cd69a69fae74e7287157693de1ea536b2c98e61b760860354#npm:8.0.0"]
           ],
@@ -57,6 +59,63 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@npmcli/move-file", "npm:1.1.2"],
             ["mkdirp", "npm:1.0.4"],
             ["rimraf", "npm:3.0.2"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["@rollup/plugin-typescript", [
+        ["npm:8.2.5", {
+          "packageLocation": "./.yarn/cache/@rollup-plugin-typescript-npm-8.2.5-560cc43ae9-ab32daf727.zip/node_modules/@rollup/plugin-typescript/",
+          "packageDependencies": [
+            ["@rollup/plugin-typescript", "npm:8.2.5"]
+          ],
+          "linkType": "SOFT",
+        }],
+        ["virtual:74b5a9eea75986763aca1137f73c1df04b353154dbdff7f54ba3c8c3904b261a28558bf4e1e4d92cd69a69fae74e7287157693de1ea536b2c98e61b760860354#npm:8.2.5", {
+          "packageLocation": "./.yarn/__virtual__/@rollup-plugin-typescript-virtual-e094d9113f/0/cache/@rollup-plugin-typescript-npm-8.2.5-560cc43ae9-ab32daf727.zip/node_modules/@rollup/plugin-typescript/",
+          "packageDependencies": [
+            ["@rollup/plugin-typescript", "virtual:74b5a9eea75986763aca1137f73c1df04b353154dbdff7f54ba3c8c3904b261a28558bf4e1e4d92cd69a69fae74e7287157693de1ea536b2c98e61b760860354#npm:8.2.5"],
+            ["@rollup/pluginutils", "virtual:e094d9113f7cd6b96042c49243f7927912905f318bceef5a55e5985b6c1f517b3871f628ea8152bc082b0b5842822707c2a07664d4a507d87b01f7b7cf08f30a#npm:3.1.0"],
+            ["@types/rollup", null],
+            ["@types/tslib", null],
+            ["@types/typescript", null],
+            ["resolve", "patch:resolve@npm%3A1.20.0#~builtin<compat/resolve>::version=1.20.0&hash=00b1ff"],
+            ["rollup", "npm:2.55.1"],
+            ["tslib", "npm:2.3.0"],
+            ["typescript", "patch:typescript@npm%3A4.3.5#~builtin<compat/typescript>::version=4.3.5&hash=d8b4e7"]
+          ],
+          "packagePeers": [
+            "@types/rollup",
+            "@types/tslib",
+            "@types/typescript",
+            "rollup",
+            "tslib",
+            "typescript"
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["@rollup/pluginutils", [
+        ["npm:3.1.0", {
+          "packageLocation": "./.yarn/cache/@rollup-pluginutils-npm-3.1.0-b44b222e7d-8be16e2786.zip/node_modules/@rollup/pluginutils/",
+          "packageDependencies": [
+            ["@rollup/pluginutils", "npm:3.1.0"]
+          ],
+          "linkType": "SOFT",
+        }],
+        ["virtual:e094d9113f7cd6b96042c49243f7927912905f318bceef5a55e5985b6c1f517b3871f628ea8152bc082b0b5842822707c2a07664d4a507d87b01f7b7cf08f30a#npm:3.1.0", {
+          "packageLocation": "./.yarn/__virtual__/@rollup-pluginutils-virtual-2bdb6cabb3/0/cache/@rollup-pluginutils-npm-3.1.0-b44b222e7d-8be16e2786.zip/node_modules/@rollup/pluginutils/",
+          "packageDependencies": [
+            ["@rollup/pluginutils", "virtual:e094d9113f7cd6b96042c49243f7927912905f318bceef5a55e5985b6c1f517b3871f628ea8152bc082b0b5842822707c2a07664d4a507d87b01f7b7cf08f30a#npm:3.1.0"],
+            ["@types/estree", "npm:0.0.39"],
+            ["@types/rollup", null],
+            ["estree-walker", "npm:1.0.1"],
+            ["picomatch", "npm:2.3.0"],
+            ["rollup", "npm:2.55.1"]
+          ],
+          "packagePeers": [
+            "@types/rollup",
+            "rollup"
           ],
           "linkType": "HARD",
         }]
@@ -102,6 +161,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/@tsconfig-node16-npm-1.0.2-1f43ab567a-ca94d36397.zip/node_modules/@tsconfig/node16/",
           "packageDependencies": [
             ["@tsconfig/node16", "npm:1.0.2"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["@types/estree", [
+        ["npm:0.0.39", {
+          "packageLocation": "./.yarn/cache/@types-estree-npm-0.0.39-f898500e96-412fb5b986.zip/node_modules/@types/estree/",
+          "packageDependencies": [
+            ["@types/estree", "npm:0.0.39"]
           ],
           "linkType": "HARD",
         }]
@@ -456,6 +524,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD",
         }]
       ]],
+      ["estree-walker", [
+        ["npm:1.0.1", {
+          "packageLocation": "./.yarn/cache/estree-walker-npm-1.0.1-e916593b23-7e70da5396.zip/node_modules/estree-walker/",
+          "packageDependencies": [
+            ["estree-walker", "npm:1.0.1"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
       ["follow-redirects", [
         ["npm:1.14.1", {
           "packageLocation": "./.yarn/cache/follow-redirects-npm-1.14.1-e6bdc0f8e5-7381a55bdc.zip/node_modules/follow-redirects/",
@@ -514,6 +591,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD",
         }]
       ]],
+      ["function-bind", [
+        ["npm:1.1.1", {
+          "packageLocation": "./.yarn/cache/function-bind-npm-1.1.1-b56b322ae9-b32fbaebb3.zip/node_modules/function-bind/",
+          "packageDependencies": [
+            ["function-bind", "npm:1.1.1"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
       ["gauge", [
         ["npm:2.7.4", {
           "packageLocation": "./.yarn/cache/gauge-npm-2.7.4-2189a73529-a89b53cee6.zip/node_modules/gauge/",
@@ -551,6 +637,16 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/graceful-fs-npm-4.2.6-535b2234f1-792e64aafd.zip/node_modules/graceful-fs/",
           "packageDependencies": [
             ["graceful-fs", "npm:4.2.6"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["has", [
+        ["npm:1.0.3", {
+          "packageLocation": "./.yarn/cache/has-npm-1.0.3-b7f00631c1-b9ad53d53b.zip/node_modules/has/",
+          "packageDependencies": [
+            ["has", "npm:1.0.3"],
+            ["function-bind", "npm:1.1.1"]
           ],
           "linkType": "HARD",
         }]
@@ -699,6 +795,16 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/ip-npm-1.1.5-af36318aa6-30133981f0.zip/node_modules/ip/",
           "packageDependencies": [
             ["ip", "npm:1.1.5"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["is-core-module", [
+        ["npm:2.5.0", {
+          "packageLocation": "./.yarn/cache/is-core-module-npm-2.5.0-5f48eb2995-e007de6ca5.zip/node_modules/is-core-module/",
+          "packageDependencies": [
+            ["is-core-module", "npm:2.5.0"],
+            ["has", "npm:1.0.3"]
           ],
           "linkType": "HARD",
         }]
@@ -988,6 +1094,24 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD",
         }]
       ]],
+      ["path-parse", [
+        ["npm:1.0.7", {
+          "packageLocation": "./.yarn/cache/path-parse-npm-1.0.7-09564527b7-49abf3d811.zip/node_modules/path-parse/",
+          "packageDependencies": [
+            ["path-parse", "npm:1.0.7"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["picomatch", [
+        ["npm:2.3.0", {
+          "packageLocation": "./.yarn/cache/picomatch-npm-2.3.0-5e60e6c82d-16818720ea.zip/node_modules/picomatch/",
+          "packageDependencies": [
+            ["picomatch", "npm:2.3.0"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
       ["prettier", [
         ["npm:2.3.2", {
           "packageLocation": "./.yarn/cache/prettier-npm-2.3.2-4467ec48dc-17ce5784ac.zip/node_modules/prettier/",
@@ -1049,6 +1173,17 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["safe-buffer", "npm:5.1.2"],
             ["string_decoder", "npm:1.1.1"],
             ["util-deprecate", "npm:1.0.2"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["resolve", [
+        ["patch:resolve@npm%3A1.20.0#~builtin<compat/resolve>::version=1.20.0&hash=00b1ff", {
+          "packageLocation": "./.yarn/cache/resolve-patch-da1bf0dd3c-bed00be983.zip/node_modules/resolve/",
+          "packageDependencies": [
+            ["resolve", "patch:resolve@npm%3A1.20.0#~builtin<compat/resolve>::version=1.20.0&hash=00b1ff"],
+            ["is-core-module", "npm:2.5.0"],
+            ["path-parse", "npm:1.0.7"]
           ],
           "linkType": "HARD",
         }]
@@ -1306,6 +1441,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD",
         }]
       ]],
+      ["tslib", [
+        ["npm:2.3.0", {
+          "packageLocation": "./.yarn/cache/tslib-npm-2.3.0-277e75e108-8869694c26.zip/node_modules/tslib/",
+          "packageDependencies": [
+            ["tslib", "npm:2.3.0"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
       ["typescript", [
         ["patch:typescript@npm%3A4.3.5#~builtin<compat/typescript>::version=4.3.5&hash=d8b4e7", {
           "packageLocation": "./.yarn/cache/typescript-patch-bb3b548ba1-bc2c4fdf0f.zip/node_modules/typescript/",
@@ -1413,6 +1557,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./",
           "packageDependencies": [
             ["yare-serve", "workspace:."],
+            ["@rollup/plugin-typescript", "virtual:74b5a9eea75986763aca1137f73c1df04b353154dbdff7f54ba3c8c3904b261a28558bf4e1e4d92cd69a69fae74e7287157693de1ea536b2c98e61b760860354#npm:8.2.5"],
             ["@types/node", "npm:16.4.12"],
             ["@types/ws", "npm:7.4.7"],
             ["axios", "npm:0.21.1"],
@@ -1422,6 +1567,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["prettier", "npm:2.3.2"],
             ["rollup", "npm:2.55.1"],
             ["ts-node", "virtual:74b5a9eea75986763aca1137f73c1df04b353154dbdff7f54ba3c8c3904b261a28558bf4e1e4d92cd69a69fae74e7287157693de1ea536b2c98e61b760860354#npm:10.1.0"],
+            ["tslib", "npm:2.3.0"],
             ["typescript", "patch:typescript@npm%3A4.3.5#~builtin<compat/typescript>::version=4.3.5&hash=d8b4e7"],
             ["ws", "virtual:74b5a9eea75986763aca1137f73c1df04b353154dbdff7f54ba3c8c3904b261a28558bf4e1e4d92cd69a69fae74e7287157693de1ea536b2c98e61b760860354#npm:8.0.0"]
           ],

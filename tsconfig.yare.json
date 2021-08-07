@@ -1,8 +1,12 @@
 {
-  "extends": "tsconfig.json",
   "compilerOptions": {
-	"sourceRoot": ".",
 	"baseUrl": ".",
+	"module": "ESNext",
+	"moduleResolution": "Node",
+	"target": "ESNext",
+	"sourceMap": false,
+	"outDir": "./var/output",
+	"resolveJsonModule": true,
 	"typeRoots": [
 	  "./@types"
 	],
