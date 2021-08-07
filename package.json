@@ -1,9 +1,23 @@
 {
-  "name": "yare-serve",
+  "name": "@paroz-io/yare-outpost",
   "version": "0.1.0",
+  "description": "For yare.io: An IDE-agnostic tool with live uploads and more",
+  "keywords": [
+	"yare",
+	"yare.io",
+	"game",
+	"io",
+	"rts",
+	"strategy"
+  ],
   "license": "GPL-3.0-only",
+  "author": {
+	"name": "Ryan Paroz",
+	"email": "ryan@paroz.io"
+  },
+  "main": "src/outpost.ts",
   "scripts": {
-    "serve": "ts-node src/serve.ts",
+    "serve": "ts-node src/outpost.ts",
     "build": "rollup --config rollup.config.ts"
   },
   "dependencies": {

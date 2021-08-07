@@ -50,7 +50,7 @@ async function initWatcher<Domain extends string, Server extends string>(
 	return codeWatcher;
 }
 
-async function serve(): Promise<string> {
+async function outpost(): Promise<string> {
 	const server = await initServer({ domain: "yare.io", server: "d1" });
 	const gameIds = await server.fetchGameIds();
 
@@ -67,7 +67,7 @@ async function serve(): Promise<string> {
 	return chalk.yellowBright("No games found, exiting...");
 }
 
-serve()
+outpost()
 	.then((msg: string) => {
 		console.log(msg);
 		process.exit();
