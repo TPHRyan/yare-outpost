@@ -1485,6 +1485,7 @@ __metadata:
     "@rollup/plugin-babel": ^5.3.0
     "@rollup/plugin-node-resolve": ^13.0.4
     "@rollup/plugin-typescript": ^8.2.5
+    "@types/babel__core": ^7.1.15
     "@types/node": ^16.4.12
     "@types/ws": ^7.4.7
     axios: ^0.21.1
@@ -1616,7 +1617,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/babel__core@npm:^7.0.0, @types/babel__core@npm:^7.1.14":
+"@types/babel__core@npm:^7.0.0, @types/babel__core@npm:^7.1.14, @types/babel__core@npm:^7.1.15":
   version: 7.1.15
   resolution: "@types/babel__core@npm:7.1.15"
   dependencies:

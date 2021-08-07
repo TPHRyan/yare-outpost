@@ -1,5 +1,7 @@
 import { defineConfig } from "rollup";
 import typescript from "@rollup/plugin-typescript";
+import nodeResolve from "@rollup/plugin-node-resolve";
+import babel from "@rollup/plugin-babel";
 
 export default defineConfig({
 	input: "var/code/main.ts",
@@ -13,6 +15,13 @@ export default defineConfig({
 	plugins: [
 		typescript({
 			tsconfig: "./tsconfig.yare.json",
+		}),
+		nodeResolve(),
+		babel({
+			babelHelpers: "bundled",
+			babelrc: false,
+			presets: [],
+			sourceType: "script",
 		}),
 	],
 });
