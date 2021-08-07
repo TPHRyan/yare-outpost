@@ -1,4 +1,4 @@
-- [ ] watch the [egghead.io][egghead] series [How to Write an Open Source JavaScript Library][egghead series];
+- [x] watch the [egghead.io][egghead] series [How to Write an Open Source JavaScript Library][egghead series];
   it is extremely useful for any NPM project (OSS or closed-sourced).
 
 - [ ] start unit testing right away, [pick your unit testing framework][pick testing framework]

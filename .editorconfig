@@ -9,8 +9,12 @@ insert_final_newline = true
 tab_width = 4
 trim_trailing_whitespace = true
 
+
 [{*.har,*.jsb2,*.jsb3,*.json,.babelrc,.eslintrc,.prettierrc,.stylelintrc,bowerrc,jest.config}]
 indent_size = 2
 
 [{*.yaml,*.yml}]
 indent_size = 2
+
+[package.json]
+indent_style = space
