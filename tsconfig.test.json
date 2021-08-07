@@ -6,6 +6,7 @@
 	]
   },
   "include": [
+	"src/**/*.mocks.ts",
 	"src/**/*.test.ts"
   ],
   "exclude": [

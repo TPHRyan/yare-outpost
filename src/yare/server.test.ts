@@ -1,4 +1,4 @@
-import { getMockHttpClient } from "../net/http.test";
+import { getMockHttpClient } from "../net/http.mocks";
 
 import { YareServer } from "./server";
 import { UserSession } from "./session";

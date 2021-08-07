@@ -1,4 +1,5 @@
 /.yarn/unplugged
 
+/src/coverage
 /var/code
 /var/output
