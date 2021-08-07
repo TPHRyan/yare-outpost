@@ -24,11 +24,13 @@
   },
   "scripts": {
     "serve": "ts-node src/outpost.ts",
-    "build": "rollup --config rollup.config.ts"
+    "build": "rollup --config rollup.config.ts",
+    "test": "jest"
   },
   "dependencies": {
     "@babel/core": "^7.15.0",
     "@babel/preset-env": "^7.15.0",
+    "@babel/preset-typescript": "^7.15.0",
     "@rollup/plugin-babel": "^5.3.0",
     "@rollup/plugin-node-resolve": "^13.0.4",
     "@rollup/plugin-typescript": "^8.2.5",
@@ -46,9 +48,12 @@
     "ws": "^8.0.0"
   },
   "devDependencies": {
+    "@jest/types": "^27.0.6",
     "@types/babel__core": "^7.1.15",
+    "@types/jest": "^26.0.24",
     "babel-jest": "^27.0.6",
     "jest": "^27.0.6",
-    "prettier": "^2.3.2"
+    "prettier": "^2.3.2",
+    "ts-jest": "^27.0.4"
   }
 }
