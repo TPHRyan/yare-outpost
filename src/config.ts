@@ -19,13 +19,17 @@ export interface ServerConfig<Domain extends string, Server extends string>
 	password: string;
 }
 
-export async function configure<
+export interface ConnectionConfig<
 	Domain extends string,
 	Server extends string,
->(connectionConfig: {
+> {
 	domain: Domain;
 	server: Server;
-}): Promise<ServerConfig<Domain, Server>> {
+}
+
+export async function configure<Domain extends string, Server extends string>(
+	connectionConfig: ConnectionConfig<Domain, Server>,
+): Promise<ServerConfig<Domain, Server>> {
 	const username = await question("Enter your username: ");
 	// TODO: Replace this with something else.
 	//  Don't really want to accept password outside of .env or a secret
