@@ -1,12 +1,15 @@
 import {
 	Context,
-	failure,
 	identity,
 	string,
 	Type,
 	type,
+	UnknownRecord,
 	Validation,
 } from "io-ts";
+import { pipe } from "fp-ts/function";
+import { either } from "fp-ts";
+import { mapLastError } from "../local-util";
 
 export interface UserSession {
 	user_id: string;
@@ -23,15 +26,20 @@ export const UserSession: Type<UserSession> = new Type(
 	(value: unknown): value is UserSession => {
 		return _UserSession.is(value);
 	},
-	(input: unknown, context: Context): Validation<UserSession> => {
-		if (typeof input !== "object" || null === input) {
-			return failure(input, context, "Input must be an object!");
-		}
-		const objInput = input as Record<string, unknown>;
-		if ("data" in objInput && undefined === objInput.session_id) {
-			objInput.session_id = objInput.data;
-		}
-		return _UserSession.validate(objInput, context);
-	},
+	(input: unknown, context: Context): Validation<UserSession> =>
+		pipe(
+			UnknownRecord.decode(input),
+			either.mapLeft((errs) =>
+				mapLastError(errs, (e) => ({
+					...e,
+					message: "UserSession should be an object!",
+				})),
+			),
+			either.map((session) => ({
+				...session,
+				session_id: session.session_id ?? session.data,
+			})),
+			either.chain((session) => _UserSession.validate(session, context)),
+		),
 	identity,
 );

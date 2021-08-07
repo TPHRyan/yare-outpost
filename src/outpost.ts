@@ -5,6 +5,7 @@ import chalk from "chalk";
 import { configure, ConnectionConfig } from "./config";
 import { YareServer } from "./yare/server";
 import { CodeWatcher, watchCode } from "./watcher";
+import { getHttpClient } from "./net/http";
 
 async function waitForTermination(
 	server: YareServer<string, string>,
@@ -28,10 +29,13 @@ async function initServer<Domain extends string, Server extends string>(
 ): Promise<YareServer<Domain, Server>> {
 	const serverConfig = await configure(config);
 
-	const server = new YareServer({
-		domain: serverConfig.domain,
-		server: serverConfig.server,
-	});
+	const server = new YareServer(
+		{
+			domain: serverConfig.domain,
+			server: serverConfig.server,
+		},
+		getHttpClient(),
+	);
 	await server.login(serverConfig.username, serverConfig.password);
 	return server;
 }

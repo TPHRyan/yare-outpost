@@ -1,10 +1,11 @@
 import { Buffer } from "buffer";
 
-import axios, { AxiosResponse } from "axios";
 import WebSocket from "ws";
 
 import { throwIfError } from "../local-util";
 import { UserSession } from "./session";
+import { HttpClient } from "../net/http";
+import { GameIdsFromServer } from "./response-models";
 
 export interface YareServerConfig<
 	Domain extends string,
@@ -43,7 +44,10 @@ export class YareServer<Domain extends string, Server extends string> {
 
 	private readonly errorNoSession = new Error("Not logged in to server!");
 
-	constructor(config: YareServerConfig<Domain, Server> = {}) {
+	constructor(
+		config: YareServerConfig<Domain, Server> = {},
+		private readonly http: HttpClient,
+	) {
 		const mergedConfig: FullConfig<Domain, Server> = Object.assign(
 			defaultConfig,
 			config,
@@ -58,18 +62,21 @@ export class YareServer<Domain extends string, Server extends string> {
 				"WARNING: Session already exists for this server! These details will be overwritten.",
 			);
 		}
-		const req: AxiosResponse<unknown> = await axios
-			.post(this.getHttpEndpoint("validate"), {
-				user_name: username,
-				password,
-			})
-			.catch((e) => {
-				throw Error(
-					`Couldn't log in: ${e.message ?? "Reason unknown"}`,
-				);
-			});
 
-		const session = throwIfError(UserSession.decode(req.data));
+		let returnedSession: unknown;
+		try {
+			returnedSession = await this.http.post(
+				this.getHttpEndpoint("validate"),
+				{
+					user_name: username,
+					password,
+				},
+			);
+		} catch (e) {
+			throw Error(`Couldn't log in: ${e.message ?? "Reason unknown"}`);
+		}
+
+		const session = throwIfError(UserSession.decode(returnedSession));
 
 		if (session.user_id === username) {
 			this.session = session;
@@ -97,14 +104,10 @@ export class YareServer<Domain extends string, Server extends string> {
 		if (!this.session) {
 			throw this.errorNoSession;
 		}
-		const req = await axios.get(
+		const result = await this.http.get(
 			this.getHttpEndpoint(`active-games/${this.session.user_id}`),
 		);
-		if (req.data.data === "no active games") {
-			return [];
-		} else {
-			return req.data.data;
-		}
+		return throwIfError(GameIdsFromServer.decode(result));
 	}
 
 	subscribe(

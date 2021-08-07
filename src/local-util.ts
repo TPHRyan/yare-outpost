@@ -1,6 +1,17 @@
-import { Validation } from "io-ts";
+import { Errors, Validation, ValidationError } from "io-ts";
 import { isLeft } from "fp-ts/Either";
 import { PathReporter } from "io-ts/PathReporter";
+
+export function mapLastError(
+	errors: Errors,
+	mapFn: (err: Readonly<ValidationError>) => ValidationError,
+): Errors {
+	if (errors.length < 1) {
+		return errors;
+	}
+	const lastError = errors.slice(0, -1)[0];
+	return errors.slice(-1).concat([mapFn(lastError)]);
+}
 
 export function throwIfError<A>(result: Validation<A>): A {
 	if (isLeft(result)) {
