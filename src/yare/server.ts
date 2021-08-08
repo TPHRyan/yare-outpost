@@ -1,10 +1,11 @@
 import { Buffer } from "buffer";
-
-import WebSocket from "ws";
+import { concatMap, from, map, Observable, of } from "rxjs";
 
 import { throwIfError } from "../local-util";
-import { UserSession } from "./session";
 import { HttpClient } from "../net/http";
+import { WebSocket, WebSocketFactory } from "../net/ws";
+
+import { UserSession } from "./session";
 import { GameIdsFromServer } from "./response-models";
 
 export interface YareServerConfig<
@@ -24,6 +25,11 @@ const defaultConfig: Readonly<FullConfig<"yare.io", "d1">> = {
 	server: "d1",
 };
 
+export interface YareServerServices {
+	http: HttpClient;
+	wsFactory: WebSocketFactory;
+}
+
 type YareHttpUrl<D extends string> = `https://${D}`;
 type YareHttpEndpoint<
 	D extends string,
@@ -40,13 +46,16 @@ export class YareServer<Domain extends string, Server extends string> {
 	private readonly server: Server;
 	private session?: UserSession;
 
+	private readonly http: HttpClient;
+	private readonly wsFactory: WebSocketFactory;
+
 	private gameSockets: Record<string, WebSocket> = {};
 
 	private readonly errorNoSession = new Error("Not logged in to server!");
 
 	constructor(
 		config: YareServerConfig<Domain, Server> = {},
-		private readonly http: HttpClient,
+		services: YareServerServices,
 	) {
 		const mergedConfig: FullConfig<Domain, Server> = Object.assign(
 			defaultConfig,
@@ -54,6 +63,18 @@ export class YareServer<Domain extends string, Server extends string> {
 		);
 		this.domain = mergedConfig.domain;
 		this.server = mergedConfig.server;
+
+		this.http = services.http;
+		this.wsFactory = services.wsFactory;
+	}
+
+	private initWebSocketFor(gameId: string): WebSocket {
+		if (!this.gameSockets[gameId]) {
+			this.gameSockets[gameId] = this.wsFactory(
+				this.getWssEndpoint(gameId),
+			);
+		}
+		return this.gameSockets[gameId];
 	}
 
 	async login(username: string, password: string): Promise<UserSession> {
@@ -89,11 +110,7 @@ export class YareServer<Domain extends string, Server extends string> {
 	async logout(): Promise<void> {
 		const promises: Promise<void>[] = [];
 		for (const ws of Object.values(this.gameSockets)) {
-			promises.push(
-				new Promise((resolve) => {
-					ws.on("close", () => resolve());
-				}),
-			);
+			promises.push(ws.closed);
 			ws.close();
 		}
 		this.session = undefined;
@@ -110,29 +127,15 @@ export class YareServer<Domain extends string, Server extends string> {
 		return throwIfError(GameIdsFromServer.decode(result));
 	}
 
-	subscribe(
-		gameId: string,
-		event: "message" | "close",
-		handler: (data: unknown) => void,
-	): void {
-		if (!this.gameSockets[gameId]) {
-			this.gameSockets[gameId] = new WebSocket(
-				this.getWssEndpoint(gameId),
-				{
-					headers: {
-						"User-Agent":
-							"yare-sync (https://github.com/swz-gh/yare-sync)",
-					},
-				},
-			);
-		}
-		this.gameSockets[gameId].on(event, (ev: Buffer | undefined) => {
-			let data = undefined;
-			if (Buffer.isBuffer(ev)) {
-				data = JSON.parse(ev.toString("utf-8"));
-			}
-			handler(data);
-		});
+	message$(gameId: string): Observable<Record<string, unknown> | unknown[]> {
+		const gameSocket = this.initWebSocketFor(gameId);
+		return gameSocket.message$.pipe(
+			concatMap((data) => (Array.isArray(data) ? from(data) : of(data))),
+			map((data): string =>
+				Buffer.isBuffer(data) ? data.toString("utf-8") : data,
+			),
+			map((jsonString) => JSON.parse(jsonString)),
+		);
 	}
 
 	private getBaseHttpUrl(): YareHttpUrl<Domain> {

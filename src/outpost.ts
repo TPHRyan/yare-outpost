@@ -6,6 +6,7 @@ import { configure, ConnectionConfig } from "./config";
 import { YareServer } from "./yare/server";
 import { CodeWatcher, watchCode } from "./watcher";
 import { getHttpClient } from "./net/http";
+import { createWebSocket } from "./net/ws";
 
 async function waitForTermination(
 	server: YareServer<string, string>,
@@ -34,7 +35,10 @@ async function initServer<Domain extends string, Server extends string>(
 			domain: serverConfig.domain,
 			server: serverConfig.server,
 		},
-		getHttpClient(),
+		{
+			http: getHttpClient(),
+			wsFactory: createWebSocket,
+		},
 	);
 	await server.login(serverConfig.username, serverConfig.password);
 	return server;
