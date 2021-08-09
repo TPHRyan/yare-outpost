@@ -40,8 +40,13 @@ function _createWebSocket(
 	return {
 		message$,
 		send: util.promisify<unknown, void>(
-			(data: unknown, cb?: (err?: Error) => void) =>
-				webSocket.send(data, cb),
+			(data: unknown, cb?: (err?: Error) => void) => {
+				if (webSocket.readyState === WebSocketImpl.CONNECTING) {
+					webSocket.on("open", () => webSocket.send(data, cb));
+				} else {
+					webSocket.send(data, cb);
+				}
+			},
 		),
 		close: (code, data) => webSocket.close(code, data),
 		closed: new Promise<void>((resolve) =>
