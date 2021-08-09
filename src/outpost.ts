@@ -3,10 +3,10 @@ import process from "process";
 import chalk from "chalk";
 
 import { configure, ConnectionConfig } from "./config";
-import { YareServer } from "./yare/server";
-import { CodeWatcher, watchCode } from "./watcher";
 import { getHttpClient } from "./net/http";
 import { createWebSocket } from "./net/ws";
+import { CodeWatcher, watchCode } from "./watcher";
+import { Server as YareServer } from "./yare";
 
 async function waitForTermination(
 	server: YareServer<string, string>,
@@ -60,11 +60,11 @@ async function initWatcher<Domain extends string, Server extends string>(
 
 async function outpost(): Promise<string> {
 	const server = await initServer({ domain: "yare.io", server: "d1" });
-	const gameIds = await server.fetchGameIds();
+	const games = await server.fetchGames();
 
-	if (gameIds.length > 0) {
-		const gameId = gameIds[0];
-		console.log(chalk.greenBright(`Connecting to game ${gameId}...`));
+	if (games.length > 0) {
+		const game = games[0];
+		console.log(chalk.greenBright(`Connecting to game ${game.id}...`));
 		console.log(chalk.yellow("(Not really, not implemented)"));
 
 		await initWatcher("./var/code/main.ts", server);

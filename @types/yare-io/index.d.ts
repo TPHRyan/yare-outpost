@@ -1,6 +1,7 @@
 interface Memory {
 	[key: string]: unknown;
 }
+
 declare const memory: Memory;
 
 type Position = [x: number, y: number];
@@ -51,13 +52,17 @@ interface BaseSpirit extends Destructible {
 	mark: string;
 
 	move(target: Position): void;
+
 	energize(target: Entity): void;
+
 	shout(message: string): void;
+
 	set_mark(label: string): void;
 }
 
 interface CircleSpirit extends BaseSpirit {
 	merge(target: CircleSpirit): void;
+
 	divide(): void;
 
 	shape: "circles";
@@ -150,8 +155,11 @@ interface SmallStar extends _Star {
 interface Graphics {
 	style: string;
 	linewidth: number;
+
 	line(start: Position, end: Position): void;
+
 	circle(pos: Position, r: number): void;
+
 	rect(tl: Position, br: Position): void;
 }
 

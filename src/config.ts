@@ -2,7 +2,7 @@ import process from "process";
 import readline from "readline";
 import util from "util";
 
-import { YareServerConfig } from "./yare/server";
+import { ServerConfig as YareServerConfig } from "./yare/server";
 
 const rl = readline.createInterface({
 	input: process.stdin,
@@ -13,7 +13,7 @@ const question = util.promisify(
 		rl.question(query, (answer: string) => callback(undefined, answer)),
 );
 
-export interface ServerConfig<Domain extends string, Server extends string>
+export interface OutpostConfig<Domain extends string, Server extends string>
 	extends YareServerConfig<Domain, Server> {
 	username: string;
 	password: string;
@@ -29,7 +29,7 @@ export interface ConnectionConfig<
 
 export async function configure<Domain extends string, Server extends string>(
 	connectionConfig: ConnectionConfig<Domain, Server>,
-): Promise<ServerConfig<Domain, Server>> {
+): Promise<OutpostConfig<Domain, Server>> {
 	const username = await question("Enter your username: ");
 	// TODO: Replace this with something else.
 	//  Don't really want to accept password outside of .env or a secret

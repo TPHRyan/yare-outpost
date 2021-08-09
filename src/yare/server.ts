@@ -1,23 +1,25 @@
-import { Buffer } from "buffer";
-import { concatMap, from, map, Observable, of } from "rxjs";
-
 import { throwIfError } from "../local-util";
 import { HttpClient } from "../net/http";
-import { WebSocket, WebSocketFactory } from "../net/ws";
+import { WebSocketFactory } from "../net/ws";
 
+import {
+	createGameProxy,
+	GameWebSocketFactory,
+	getLazyGamesFromGameIds,
+	Game,
+	GameInfo,
+	NotFoundGameInfo,
+} from "./game";
 import { UserSession } from "./session";
 import { GameIdsFromServer } from "./response-models";
 
-export interface YareServerConfig<
-	Domain extends string,
-	Server extends string,
-> {
+export interface ServerConfig<Domain extends string, Server extends string> {
 	domain?: Domain;
 	server?: Server;
 }
 
 type FullConfig<D extends string, S extends string> = Required<
-	YareServerConfig<D, S>
+	ServerConfig<D, S>
 >;
 
 const defaultConfig: Readonly<FullConfig<"yare.io", "d1">> = {
@@ -25,7 +27,7 @@ const defaultConfig: Readonly<FullConfig<"yare.io", "d1">> = {
 	server: "d1",
 };
 
-export interface YareServerServices {
+export interface ServerServices {
 	http: HttpClient;
 	wsFactory: WebSocketFactory;
 }
@@ -41,21 +43,27 @@ type YareWssEndpoint<
 	E extends string,
 > = `wss://${D}/${S}/${E}`;
 
-export class YareServer<Domain extends string, Server extends string> {
-	private readonly domain: Domain;
-	private readonly server: Server;
-	private session?: UserSession;
+function checkIsValidSession(
+	session: UserSession | null,
+): asserts session is UserSession {
+	if (null === session) {
+		throw new Error("Not logged in to server!");
+	}
+}
+
+export class Server<Domain extends string, Server extends string> {
+	public readonly domain: Domain;
+	public readonly server: Server;
 
 	private readonly http: HttpClient;
-	private readonly wsFactory: WebSocketFactory;
+	private readonly gameWsFactory: GameWebSocketFactory;
 
-	private gameSockets: Record<string, WebSocket> = {};
-
-	private readonly errorNoSession = new Error("Not logged in to server!");
+	private _games: Record<string, Game> = {};
+	private session: UserSession | null = null;
 
 	constructor(
-		config: YareServerConfig<Domain, Server> = {},
-		services: YareServerServices,
+		config: ServerConfig<Domain, Server> = {},
+		services: ServerServices,
 	) {
 		const mergedConfig: FullConfig<Domain, Server> = Object.assign(
 			defaultConfig,
@@ -65,16 +73,8 @@ export class YareServer<Domain extends string, Server extends string> {
 		this.server = mergedConfig.server;
 
 		this.http = services.http;
-		this.wsFactory = services.wsFactory;
-	}
-
-	private initWebSocketFor(gameId: string): WebSocket {
-		if (!this.gameSockets[gameId]) {
-			this.gameSockets[gameId] = this.wsFactory(
-				this.getWssEndpoint(gameId),
-			);
-		}
-		return this.gameSockets[gameId];
+		this.gameWsFactory = (gameId: string) =>
+			services.wsFactory(this.getWssEndpoint(gameId));
 	}
 
 	async login(username: string, password: string): Promise<UserSession> {
@@ -109,33 +109,52 @@ export class YareServer<Domain extends string, Server extends string> {
 
 	async logout(): Promise<void> {
 		const promises: Promise<void>[] = [];
-		for (const ws of Object.values(this.gameSockets)) {
-			promises.push(ws.closed);
-			ws.close();
+		for (const game of Object.values(this._games)) {
+			promises.push(game.close());
 		}
-		this.session = undefined;
+		this.session = null;
 		await Promise.all(promises);
 	}
 
-	async fetchGameIds(): Promise<string[]> {
-		if (!this.session) {
-			throw this.errorNoSession;
-		}
+	async fetchGames(): Promise<Readonly<Game[]>> {
+		checkIsValidSession(this.session);
 		const result = await this.http.get(
 			this.getHttpEndpoint(`active-games/${this.session.user_id}`),
 		);
-		return throwIfError(GameIdsFromServer.decode(result));
+		const gameIds = throwIfError(GameIdsFromServer.decode(result));
+		this._games = getLazyGamesFromGameIds(gameIds, this.gameWsFactory);
+		return this.games;
 	}
 
-	message$(gameId: string): Observable<Record<string, unknown> | unknown[]> {
-		const gameSocket = this.initWebSocketFor(gameId);
-		return gameSocket.message$.pipe(
-			concatMap((data) => (Array.isArray(data) ? from(data) : of(data))),
-			map((data): string =>
-				Buffer.isBuffer(data) ? data.toString("utf-8") : data,
-			),
-			map((jsonString) => JSON.parse(jsonString)),
+	async fetchGameInfo(gameId: string): Promise<Readonly<GameInfo> | null> {
+		checkIsValidSession(this.session);
+		const result = await this.http.post<GameInfo | NotFoundGameInfo>(
+			this.getHttpEndpoint(`gameinfo`),
+			{
+				game_id: gameId,
+				session_id: this.session.session_id,
+			},
 		);
+		if (undefined === result?.data || "no game found" === result?.data) {
+			return null;
+		} else {
+			this._games[gameId] = createGameProxy(gameId, this.gameWsFactory);
+			return result;
+		}
+	}
+
+	get games(): Game[] {
+		return Object.values(this._games);
+	}
+
+	game(gameId: string): Game {
+		if (!this._games[gameId]) {
+			throw new Error(
+				`Game with id "${gameId}" not found!\n` +
+					"Have you called fetchGames() or fetchGameInfo() already?",
+			);
+		}
+		return this._games[gameId];
 	}
 
 	private getBaseHttpUrl(): YareHttpUrl<Domain> {

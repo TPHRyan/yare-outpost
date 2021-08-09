@@ -15,6 +15,7 @@
   ],
   "exclude": [
 	"node_modules",
+	"src/yare/yare-sync.ts",
 	"src/**/*.mocks.ts",
 	"src/**/*.test.ts"
   ]

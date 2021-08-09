@@ -1,5 +1,5 @@
 import { InputOption, OutputOptions, RollupBuild, watch } from "rollup";
-import { Subject } from "rxjs";
+import { Observable, Subject } from "rxjs";
 
 import config from "../rollup.config";
 
@@ -17,7 +17,8 @@ async function generateBundleCode(bundle: RollupBuild): Promise<string> {
 }
 
 export interface CodeWatcher {
-	code$: Subject<string>;
+	code$: Observable<string>;
+
 	close(): Promise<void>;
 }
 
