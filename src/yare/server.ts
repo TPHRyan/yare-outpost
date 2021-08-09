@@ -122,7 +122,11 @@ export class Server<Domain extends string, Server extends string> {
 			this.getHttpEndpoint(`active-games/${this.session.user_id}`),
 		);
 		const gameIds = throwIfError(GameIdsFromServer.decode(result));
-		this._games = getLazyGamesFromGameIds(gameIds, this.gameWsFactory);
+		this._games = getLazyGamesFromGameIds(
+			gameIds,
+			this.session,
+			this.gameWsFactory,
+		);
 		return this.games;
 	}
 
@@ -138,7 +142,11 @@ export class Server<Domain extends string, Server extends string> {
 		if (undefined === result?.data || "no game found" === result?.data) {
 			return null;
 		} else {
-			this._games[gameId] = createGameProxy(gameId, this.gameWsFactory);
+			this._games[gameId] = createGameProxy(
+				gameId,
+				this.session,
+				this.gameWsFactory,
+			);
 			return result;
 		}
 	}

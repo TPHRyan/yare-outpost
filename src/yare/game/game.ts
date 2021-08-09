@@ -3,11 +3,15 @@ import { Buffer } from "buffer";
 import { concatMap, from, map, Observable, of } from "rxjs";
 
 import { WebSocket } from "../../net/ws";
+import type { UserSession } from "../session";
+
 import { GameData } from "./game-data.model";
 
 export interface Game {
 	id: string;
 	message$: Observable<GameData>;
+
+	sendCode(code: string): Promise<void>;
 
 	close(): Promise<void>;
 }
@@ -21,18 +25,20 @@ export type GameWebSocketFactory = (gameId: string) => WebSocket;
 
 export function getLazyGamesFromGameIds(
 	gameIds: string[],
+	session: UserSession,
 	ws: GameWebSocketFactory,
 ): Record<string, Game> {
 	return Object.fromEntries(
 		gameIds.map((gameId: string): [string, Game] => [
 			gameId,
-			createGameProxy(gameId, ws),
+			createGameProxy(gameId, session, ws),
 		]),
 	);
 }
 
 export function createGameProxy(
 	gameId: string,
+	session: UserSession,
 	ws: GameWebSocketFactory,
 ): Game {
 	return new Proxy<GameProxy>(
@@ -54,6 +60,12 @@ export function createGameProxy(
 						target.message$ = createMessageObservable(
 							initGameSocket(target, ws),
 						);
+						break;
+					case "sendCode":
+						target.sendCode = createSendCodeFunction(
+							initGameSocket(target, ws),
+							session,
+						);
 				}
 				return target[key];
 			},
@@ -61,20 +73,22 @@ export function createGameProxy(
 	) as Game;
 }
 
+type GameProxyWithSocket = GameProxy & { _webSocket: WebSocket };
+
 function initGameSocket(
 	target: GameProxy,
 	ws: GameWebSocketFactory,
-): GameProxy & { _webSocket: WebSocket } {
+): GameProxyWithSocket {
 	return undefined === target._webSocket
 		? {
 				...target,
 				_webSocket: ws(target.id),
 		  }
-		: (target as GameProxy & { _webSocket: WebSocket });
+		: (target as GameProxyWithSocket);
 }
 
 function createMessageObservable(
-	target: GameProxy & { _webSocket: WebSocket },
+	target: GameProxyWithSocket,
 ): Observable<GameData> {
 	return target._webSocket.message$.pipe(
 		concatMap((data) => {
@@ -85,4 +99,16 @@ function createMessageObservable(
 		),
 		map((jsonString) => JSON.parse(jsonString)),
 	);
+}
+
+function createSendCodeFunction(
+	target: GameProxyWithSocket,
+	session: UserSession,
+): (code: string) => Promise<void> {
+	return (code: string): Promise<void> =>
+		target._webSocket.send({
+			u_code: code,
+			u_id: session.user_id,
+			session_id: session.session_id,
+		});
 }
