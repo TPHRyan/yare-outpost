@@ -1,4 +1,4 @@
-/// <reference path="../../../@types/yare-io/index.d.ts" />
+/// <reference types="yare-io" />
 
 type Players = [player1: string, player2: string];
 

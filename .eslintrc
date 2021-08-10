@@ -1,0 +1,63 @@
+{
+  "extends": [
+	"eslint:recommended",
+	"prettier"
+  ],
+  "env": {
+	"es6": true,
+	"node": true
+  },
+  "rules": {
+	"prettier/prettier": "error"
+  },
+  "plugins": [
+	"node",
+	"prettier"
+  ],
+  "overrides": [
+	{
+	  "files": [
+		"*.ts"
+	  ],
+	  "extends": [
+		"eslint:recommended",
+		"plugin:@typescript-eslint/recommended",
+		"prettier"
+	  ],
+	  "parser": "@typescript-eslint/parser",
+	  "rules": {
+		"@typescript-eslint/explicit-member-accessibility": [
+		  "error",
+		  {
+			"overrides": {
+			  "accessors": "no-public",
+			  "constructors": "no-public",
+			  "methods": "no-public",
+			  "properties": "explicit",
+			  "parameterProperties": "explicit"
+			}
+		  }
+		],
+		"@typescript-eslint/no-inferrable-types": [
+		  "error",
+		  {
+			"ignoreParameters": true,
+			"ignoreProperties": true
+		  }
+		],
+		"@typescript-eslint/no-unused-vars": [
+		  "error",
+		  {
+			"argsIgnorePattern": "^_.*$",
+			"varsIgnorePattern": "^_.*$"
+		  }
+		]
+	  },
+	  "plugins": [
+		"@typescript-eslint",
+		"node",
+		"prettier"
+	  ]
+	}
+  ]
+}

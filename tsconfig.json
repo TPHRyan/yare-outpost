@@ -7,7 +7,11 @@
 	"strict": true,
 	"esModuleInterop": true,
 	"rootDir": ".",
-	"baseUrl": "."
+	"baseUrl": ".",
+	"typeRoots": [
+	  "./node_modules/@types",
+	  "./@types"
+	]
   },
   "include": [
 	"src/**/*.ts",

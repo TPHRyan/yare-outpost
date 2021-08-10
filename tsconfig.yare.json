@@ -10,10 +10,14 @@
 	"typeRoots": [
 	  "./@types"
 	],
-	"types": ["yare-io"]
+	"types": [
+	  "yare-io"
+	]
   },
   "include": [
 	"var/code/**/*.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+	"node_modules"
+  ]
 }

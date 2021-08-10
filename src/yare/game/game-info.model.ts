@@ -1,4 +1,4 @@
-/// <reference path="../../../@types/yare-io/index.d.ts" />
+/// <reference types="yare-io" />
 
 export interface NotFoundGameInfo {
 	data: "no game found";
