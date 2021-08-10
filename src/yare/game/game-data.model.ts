@@ -1,17 +1,11 @@
 /// <reference types="yare-io" />
 
-type Players = [player1: string, player2: string];
-
 export type Color<
 	R extends number = number,
 	G extends number = number,
 	B extends number = number,
 	A extends number = 1,
 > = `rgba(${R}, ${G}, ${B}, ${A})`;
-type Colors = [Color, Color];
-
-type Shapes = [Shape, Shape];
-
 export type ColorGBlue = Color<58, 197, 240>;
 export type ColorRedish = Color<232, 97, 97>;
 export type ColorPistagre = Color<148, 176, 108>;
@@ -21,9 +15,9 @@ export interface InitialGameData {
 	stars: Star[];
 	bases: Base[];
 	outposts: Outpost[];
-	players: Players;
-	colors: Colors;
-	shapes: Shapes;
+	players: [player1: string, player2: string];
+	colors: [Color, Color];
+	shapes: [Shape, Shape];
 }
 
 export type UnitState = [

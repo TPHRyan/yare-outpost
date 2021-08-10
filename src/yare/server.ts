@@ -13,7 +13,7 @@ import {
 import { UserSession } from "./session";
 import { GameIdsFromServer } from "./response-models";
 
-export interface ServerConfig<Domain extends string, Server extends string> {
+interface ServerConfig<Domain extends string, Server extends string> {
 	domain?: Domain;
 	server?: Server;
 }
@@ -27,7 +27,7 @@ const defaultConfig: Readonly<FullConfig<"yare.io", "d1">> = {
 	server: "d1",
 };
 
-export interface ServerServices {
+interface ServerServices {
 	http: HttpClient;
 	wsFactory: WebSocketFactory;
 }
@@ -182,3 +182,5 @@ export class Server<Domain extends string, Server extends string> {
 		return `wss://${this.domain}/${this.server}/${endpoint}`;
 	}
 }
+
+export { ServerConfig, ServerServices };

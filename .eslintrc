@@ -1,6 +1,7 @@
 {
   "extends": [
 	"eslint:recommended",
+	"plugin:import/recommended",
 	"prettier"
   ],
   "env": {
@@ -11,9 +12,31 @@
 	"prettier/prettier": "error"
   },
   "plugins": [
+	"import",
 	"node",
 	"prettier"
   ],
+  "settings": {
+	"import/external-module-folders": [
+	  ".yarn",
+	  "node_modules"
+	],
+	"import/resolver": {
+	  "typescript": {
+		"alwaysTryTypes": false,
+		"project": [
+		  "tsconfig.json",
+		  "tsconfig.test.json"
+		]
+	  },
+	  "node": {
+		"extensions": [
+		  ".js",
+		  ".ts"
+		]
+	  }
+	}
+  },
   "overrides": [
 	{
 	  "files": [
@@ -22,6 +45,7 @@
 	  "extends": [
 		"eslint:recommended",
 		"plugin:@typescript-eslint/recommended",
+		"plugin:import/recommended",
 		"prettier"
 	  ],
 	  "parser": "@typescript-eslint/parser",
@@ -51,11 +75,18 @@
 			"argsIgnorePattern": "^_.*$",
 			"varsIgnorePattern": "^_.*$"
 		  }
-		]
+		],
+		"import/exports-last": "error",
+		"import/first": "error",
+		"import/no-cycle": "error",
+		"import/no-extraneous-dependencies": "error",
+		"import/no-mutable-exports": "error",
+		"import/no-unused-modules": "error",
+		"import/no-useless-path-segments": "error",
+		"import/order": "error"
 	  },
 	  "plugins": [
 		"@typescript-eslint",
-		"node",
 		"prettier"
 	  ]
 	}

@@ -7,12 +7,9 @@
   [eslint][eslint], [jshint][jshint], [jscs][jscs] or all of them together
   [gulp-lint-everything][gulp-lint-everything]
 
-- [ ] run linting and unit tests on each commit locally. [pre-git][pre-git], [ghooks][ghooks]
+- [x] run linting and unit tests on each commit locally. [pre-git][pre-git], [ghooks][ghooks]
 
-- [ ] use code quality as a service tool to fight creeping code complexity. [Codacy][Codacy],
-  [CodeClimate][CodeClimate], [BitHound][BitHound]
-
-- [ ] validate commit message using [pre-git][pre-git] or [commitizen][commitizen]
+- [ ] \[maybe] validate commit message using [pre-git][pre-git] or [commitizen][commitizen]
   with [validate-commit-msg][validate-commit-msg]. This enables other tools, like intelligent release notes.
 
 - [ ] use logging library to show more information during debugging or verbose mode.

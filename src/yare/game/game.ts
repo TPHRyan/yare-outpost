@@ -7,7 +7,7 @@ import type { UserSession } from "../session";
 
 import { GameData } from "./game-data.model";
 
-export interface Game {
+interface Game {
 	id: string;
 	message$: Observable<GameData>;
 
@@ -21,7 +21,47 @@ interface GameProxy extends Partial<Game> {
 	_webSocket?: WebSocket;
 }
 
-export type GameWebSocketFactory = (gameId: string) => WebSocket;
+type GameWebSocketFactory = (gameId: string) => WebSocket;
+
+type GameProxyWithSocket = GameProxy & { _webSocket: WebSocket };
+
+function initGameSocket(
+	target: GameProxy,
+	ws: GameWebSocketFactory,
+): GameProxyWithSocket {
+	return undefined === target._webSocket
+		? {
+				...target,
+				_webSocket: ws(target.id),
+		  }
+		: (target as GameProxyWithSocket);
+}
+
+function createMessageObservable(
+	target: GameProxyWithSocket,
+): Observable<GameData> {
+	return target._webSocket.message$.pipe(
+		concatMap((data) => {
+			return Array.isArray(data) ? from(data) : of(data);
+		}),
+		map((data): string =>
+			Buffer.isBuffer(data) ? data.toString("utf-8") : data,
+		),
+		map((jsonString) => JSON.parse(jsonString)),
+	);
+}
+
+function createSendCodeFunction(
+	target: GameProxyWithSocket,
+	session: UserSession,
+): (code: string) => Promise<void> {
+	return (code: string): Promise<void> =>
+		target._webSocket.send({
+			u_code: code,
+			u_id: session.user_id,
+			session_id: session.session_id,
+		});
+}
 
 export function getLazyGamesFromGameIds(
 	gameIds: string[],
@@ -73,42 +113,4 @@ export function createGameProxy(
 	) as Game;
 }
 
-type GameProxyWithSocket = GameProxy & { _webSocket: WebSocket };
-
-function initGameSocket(
-	target: GameProxy,
-	ws: GameWebSocketFactory,
-): GameProxyWithSocket {
-	return undefined === target._webSocket
-		? {
-				...target,
-				_webSocket: ws(target.id),
-		  }
-		: (target as GameProxyWithSocket);
-}
-
-function createMessageObservable(
-	target: GameProxyWithSocket,
-): Observable<GameData> {
-	return target._webSocket.message$.pipe(
-		concatMap((data) => {
-			return Array.isArray(data) ? from(data) : of(data);
-		}),
-		map((data): string =>
-			Buffer.isBuffer(data) ? data.toString("utf-8") : data,
-		),
-		map((jsonString) => JSON.parse(jsonString)),
-	);
-}
-
-function createSendCodeFunction(
-	target: GameProxyWithSocket,
-	session: UserSession,
-): (code: string) => Promise<void> {
-	return (code: string): Promise<void> =>
-		target._webSocket.send({
-			u_code: code,
-			u_id: session.user_id,
-			session_id: session.session_id,
-		});
-}
+export { Game, GameWebSocketFactory };

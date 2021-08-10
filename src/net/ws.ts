@@ -1,23 +1,7 @@
-import { Observable, Subject } from "rxjs";
 import util from "util";
+
+import { Observable, Subject } from "rxjs";
 import WebSocketImpl from "ws";
-
-export type WebSocketData = Exclude<WebSocketImpl.Data, ArrayBuffer>;
-
-export interface WebSocket {
-	message$: Observable<WebSocketData>;
-
-	send(data: unknown): Promise<void>;
-
-	close(code?: number, data?: string): void;
-
-	closed: Promise<void>;
-}
-
-export type WebSocketFactory = (
-	url: string,
-	headers?: Record<string, string>,
-) => WebSocket;
 
 function _createWebSocket(
 	url: string,
@@ -62,5 +46,22 @@ function createMessageSubject(
 	webSocket.on("message", (data: WebSocketData) => messageSubject.next(data));
 	return messageSubject;
 }
+
+export type WebSocketData = Exclude<WebSocketImpl.Data, ArrayBuffer>;
+
+export interface WebSocket {
+	message$: Observable<WebSocketData>;
+
+	send(data: unknown): Promise<void>;
+
+	close(code?: number, data?: string): void;
+
+	closed: Promise<void>;
+}
+
+export type WebSocketFactory = (
+	url: string,
+	headers?: Record<string, string>,
+) => WebSocket;
 
 export const createWebSocket: WebSocketFactory = _createWebSocket;

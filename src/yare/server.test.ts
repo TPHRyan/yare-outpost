@@ -6,17 +6,25 @@ import { FakeWebSocketFactory, getFakeWebSocketFactory } from "../net/ws.mocks";
 import { Server, ServerServices } from "./server";
 import { UserSession } from "./session";
 
+type UserSessionResponse = Omit<UserSession, "session_id"> & {
+	data: UserSession["session_id"];
+};
+
 const username = "city";
 const password = "H60L2Y6OL2Ih8eON";
 const fakeSession = {
 	user_id: username,
 	session_id: "45AUASfOl94",
 };
+const fakeSessionResponse: UserSessionResponse = {
+	user_id: fakeSession.user_id,
+	data: fakeSession.session_id,
+};
 const fakeGameId = "Sk3myr3l6TCb01";
 
-function getHttpWithLoginResponse(fakeSession: UserSession) {
+function getHttpWithLoginResponse(response: UserSession | UserSessionResponse) {
 	const http = getMockHttpClient();
-	http.post.mockReturnValue(fakeSession);
+	http.post.mockReturnValue(response);
 	return http;
 }
 
@@ -40,7 +48,7 @@ describe("yare server", () => {
 	});
 
 	test("should be able to login", async () => {
-		const http = getHttpWithLoginResponse(fakeSession);
+		const http = getHttpWithLoginResponse(fakeSessionResponse);
 		const server = new Server({}, getServices({ http }));
 
 		const userSession = await server.login(username, password);
