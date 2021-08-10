@@ -56,8 +56,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["eslint-plugin-node", "virtual:1b0e65b9994d30285196146ecd07aab5d1650cf80f7f064dcd56390148ff010c078a2ee268be129ebda59a129a0d19ea61d80b4bffffc4eae2730168b052310f#npm:11.1.0"],
             ["eslint-plugin-prettier", "virtual:1b0e65b9994d30285196146ecd07aab5d1650cf80f7f064dcd56390148ff010c078a2ee268be129ebda59a129a0d19ea61d80b4bffffc4eae2730168b052310f#npm:3.4.0"],
             ["fp-ts", "npm:2.11.1"],
+            ["husky", "npm:7.0.1"],
             ["io-ts", "virtual:1b0e65b9994d30285196146ecd07aab5d1650cf80f7f064dcd56390148ff010c078a2ee268be129ebda59a129a0d19ea61d80b4bffffc4eae2730168b052310f#npm:2.2.16"],
             ["jest", "virtual:1b0e65b9994d30285196146ecd07aab5d1650cf80f7f064dcd56390148ff010c078a2ee268be129ebda59a129a0d19ea61d80b4bffffc4eae2730168b052310f#npm:27.0.6"],
+            ["pinst", "npm:2.1.6"],
             ["prettier", "npm:2.3.2"],
             ["rollup", "npm:2.55.1"],
             ["rxjs", "npm:7.3.0"],
@@ -2825,8 +2827,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["eslint-plugin-node", "virtual:1b0e65b9994d30285196146ecd07aab5d1650cf80f7f064dcd56390148ff010c078a2ee268be129ebda59a129a0d19ea61d80b4bffffc4eae2730168b052310f#npm:11.1.0"],
             ["eslint-plugin-prettier", "virtual:1b0e65b9994d30285196146ecd07aab5d1650cf80f7f064dcd56390148ff010c078a2ee268be129ebda59a129a0d19ea61d80b4bffffc4eae2730168b052310f#npm:3.4.0"],
             ["fp-ts", "npm:2.11.1"],
+            ["husky", "npm:7.0.1"],
             ["io-ts", "virtual:1b0e65b9994d30285196146ecd07aab5d1650cf80f7f064dcd56390148ff010c078a2ee268be129ebda59a129a0d19ea61d80b4bffffc4eae2730168b052310f#npm:2.2.16"],
             ["jest", "virtual:1b0e65b9994d30285196146ecd07aab5d1650cf80f7f064dcd56390148ff010c078a2ee268be129ebda59a129a0d19ea61d80b4bffffc4eae2730168b052310f#npm:27.0.6"],
+            ["pinst", "npm:2.1.6"],
             ["prettier", "npm:2.3.2"],
             ["rollup", "npm:2.55.1"],
             ["rxjs", "npm:7.3.0"],
@@ -5064,6 +5068,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD",
         }]
       ]],
+      ["fromentries", [
+        ["npm:1.3.2", {
+          "packageLocation": "./.yarn/cache/fromentries-npm-1.3.2-f5392090b8-33729c529c.zip/node_modules/fromentries/",
+          "packageDependencies": [
+            ["fromentries", "npm:1.3.2"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
       ["fs-minipass", [
         ["npm:2.1.0", {
           "packageLocation": "./.yarn/cache/fs-minipass-npm-2.1.0-501ef87306-1b8d128dae.zip/node_modules/fs-minipass/",
@@ -5359,6 +5372,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [
             ["humanize-ms", "npm:1.2.1"],
             ["ms", "npm:2.1.3"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["husky", [
+        ["npm:7.0.1", {
+          "packageLocation": "./.yarn/cache/husky-npm-7.0.1-b59747cd86-b2ea1460f1.zip/node_modules/husky/",
+          "packageDependencies": [
+            ["husky", "npm:7.0.1"]
           ],
           "linkType": "HARD",
         }]
@@ -7028,6 +7050,16 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/picomatch-npm-2.3.0-5e60e6c82d-16818720ea.zip/node_modules/picomatch/",
           "packageDependencies": [
             ["picomatch", "npm:2.3.0"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["pinst", [
+        ["npm:2.1.6", {
+          "packageLocation": "./.yarn/cache/pinst-npm-2.1.6-750cbdedeb-3644c352a7.zip/node_modules/pinst/",
+          "packageDependencies": [
+            ["pinst", "npm:2.1.6"],
+            ["fromentries", "npm:1.3.2"]
           ],
           "linkType": "HARD",
         }]

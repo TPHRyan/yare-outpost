@@ -26,7 +26,10 @@
     "serve": "ts-node src/outpost.ts",
     "build": "rollup --config rollup.config.ts",
     "lint": "eslint src",
-    "test": "jest"
+    "test": "jest",
+    "postinstall": "husky install",
+    "prepublishOnly": "pinst --disable",
+    "postpublish": "pinst --enable"
   },
   "dependencies": {
     "@babel/core": "^7.15.0",
@@ -59,7 +62,9 @@
     "@types/babel__core": "^7.1.15",
     "@types/jest": "^26.0.24",
     "babel-jest": "^27.0.6",
+    "husky": "^7.0.1",
     "jest": "^27.0.6",
+    "pinst": "^2.1.6",
     "prettier": "^2.3.2",
     "ts-jest": "^27.0.4"
   }
