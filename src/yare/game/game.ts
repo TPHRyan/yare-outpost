@@ -6,9 +6,11 @@ import { WebSocket } from "../../net/ws";
 import type { UserSession } from "../session";
 
 import { GameData } from "./game-data.model";
+import { GameMetadata } from "./game-metadata.model";
 
 interface Game {
 	id: string;
+	metadata: GameMetadata;
 	message$: Observable<GameData>;
 
 	sendCode(code: string): Promise<void>;
@@ -18,10 +20,14 @@ interface Game {
 
 interface GameProxy extends Partial<Game> {
 	id: string;
+	metadata: GameMetadata;
 	_webSocket?: WebSocket;
 }
 
-type GameWebSocketFactory = (gameId: string) => WebSocket;
+type GameWebSocketFactory = (
+	gameId: string,
+	metadata: GameMetadata,
+) => WebSocket;
 
 type GameProxyWithSocket = GameProxy & { _webSocket: WebSocket };
 
@@ -32,7 +38,7 @@ function initGameSocket(
 	return undefined === target._webSocket
 		? {
 				...target,
-				_webSocket: ws(target.id),
+				_webSocket: ws(target.id, target.metadata),
 		  }
 		: (target as GameProxyWithSocket);
 }
@@ -63,27 +69,29 @@ function createSendCodeFunction(
 		});
 }
 
-export function getLazyGamesFromGameIds(
-	gameIds: string[],
+export function getLazyGamesFromMetadata(
+	metadata: GameMetadata[],
 	session: UserSession,
 	ws: GameWebSocketFactory,
 ): Record<string, Game> {
 	return Object.fromEntries(
-		gameIds.map((gameId: string): [string, Game] => [
-			gameId,
-			createGameProxy(gameId, session, ws),
+		metadata.map((metadata: GameMetadata): [string, Game] => [
+			metadata.id,
+			createGameProxy(metadata.id, metadata, session, ws),
 		]),
 	);
 }
 
 export function createGameProxy(
 	gameId: string,
+	metadata: GameMetadata,
 	session: UserSession,
 	ws: GameWebSocketFactory,
 ): Game {
 	return new Proxy<GameProxy>(
 		{
 			id: gameId,
+			metadata,
 			async close() {
 				if (this._webSocket) {
 					await this._webSocket.close();

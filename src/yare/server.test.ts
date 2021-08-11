@@ -21,6 +21,7 @@ const fakeSessionResponse: UserSessionResponse = {
 	data: fakeSession.session_id,
 };
 const fakeGameId = "Sk3myr3l6TCb01";
+const fakeGameServer = "FEzJ";
 
 function getHttpWithLoginResponse(response: UserSession | UserSessionResponse) {
 	const http = getMockHttpClient();
@@ -75,7 +76,14 @@ describe("yare server", () => {
 		const server = new Server({}, getServices({ http }));
 		await server.login(username, password);
 
-		http.get.mockReturnValue({ data: [fakeGameId] });
+		http.get.mockReturnValue({
+			data: [
+				{
+					id: fakeGameId,
+					server: fakeGameServer,
+				},
+			],
+		});
 
 		const games = await server.fetchGames();
 		expect(games).toHaveLength(1);

@@ -8,12 +8,13 @@ import { WebSocketFactory } from "../net/ws";
 import {
 	createGameProxy,
 	GameWebSocketFactory,
-	getLazyGamesFromGameIds,
+	getLazyGamesFromMetadata,
 	Game,
 	GameInfo,
 	NotFoundGameInfo,
 } from "./game";
-import { GameIdsFromServer } from "./response-models";
+import { GameMetadata } from "./game/game-metadata.model";
+import { GameMetadataFromServer } from "./response-models";
 import { UserSession } from "./session";
 
 interface ServerConfig<Domain extends string> {
@@ -38,7 +39,10 @@ type YareHttpEndpoint<
 	D extends string,
 	E extends string,
 > = `${YareHttpUrl<D>}/${E}`;
-type YareWssEndpoint<D extends string, E extends string> = `wss://${D}/d1/${E}`;
+type YareWssEndpoint<
+	D extends string,
+	E extends string,
+> = `wss://${D}/${string}/${E}`;
 
 function checkIsValidSession(
 	session: UserSession | null,
@@ -50,7 +54,6 @@ function checkIsValidSession(
 
 export class Server<Domain extends string> {
 	public readonly domain: Domain;
-	public readonly server: "d1";
 
 	private readonly http: HttpClient;
 	private readonly gameWsFactory: GameWebSocketFactory;
@@ -65,11 +68,10 @@ export class Server<Domain extends string> {
 			config,
 		);
 		this.domain = mergedConfig.domain;
-		this.server = "d1";
 
 		this.http = services.http;
-		this.gameWsFactory = (gameId: string) =>
-			services.wsFactory(this.getWssEndpoint(gameId));
+		this.gameWsFactory = (gameId: string, metadata: GameMetadata) =>
+			services.wsFactory(this.getWssEndpoint(gameId, metadata.server));
 		this.logger = mergedConfig.logger;
 	}
 
@@ -124,11 +126,11 @@ export class Server<Domain extends string> {
 	async fetchGames(): Promise<Readonly<Game[]>> {
 		checkIsValidSession(this.session);
 		const result = await this.http.get(
-			this.getHttpEndpoint(`active-games/${this.session.user_id}`),
+			this.getHttpEndpoint(`active-games/${this.session.user_id}?v=2`),
 		);
-		const gameIds = throwIfError(GameIdsFromServer.decode(result));
-		this._games = getLazyGamesFromGameIds(
-			gameIds,
+		const metadata = throwIfError(GameMetadataFromServer.decode(result));
+		this._games = getLazyGamesFromMetadata(
+			metadata,
 			this.session,
 			this.gameWsFactory,
 		);
@@ -149,6 +151,12 @@ export class Server<Domain extends string> {
 		} else {
 			this._games[gameId] = createGameProxy(
 				gameId,
+				{
+					id: gameId,
+					server: result.server,
+					pl1: result.p1,
+					pl2: result.p2,
+				},
 				this.session,
 				this.gameWsFactory,
 			);
@@ -181,10 +189,11 @@ export class Server<Domain extends string> {
 		return `${baseUrl}/${endpoint}`;
 	}
 
-	private getWssEndpoint<Endpoint extends string>(
+	private getWssEndpoint<Endpoint extends string, Server extends string>(
 		endpoint: Endpoint,
+		server: Server,
 	): YareWssEndpoint<Domain, Endpoint> {
-		return `wss://${this.domain}/${this.server}/${endpoint}`;
+		return `wss://${this.domain}/${server}/${endpoint}`;
 	}
 }
 
