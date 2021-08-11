@@ -1,19 +1,56 @@
-import { InputOption, OutputOptions, RollupBuild, watch } from "rollup";
+import { build, BuildFailure, BuildResult } from "esbuild";
 import { Observable, Subject } from "rxjs";
 
-import config from "../rollup.config";
+import buildConfig from "../build.config";
 
-async function generateBundleCode(bundle: RollupBuild): Promise<string> {
-	const { output } = await bundle.generate(config.output as OutputOptions);
+const PATTERN_FILENAME_COMMENT = /\n\s*\/\/ .*?\n/m;
+
+function generateBundleCode(result: BuildResult): string | null {
+	if (!result.outputFiles) {
+		return null;
+	}
 	let bundleString = "";
-	for (const chunkOrAsset of output) {
-		if ("chunk" === chunkOrAsset.type) {
-			bundleString += chunkOrAsset.code;
-		}
+	for (const file of result.outputFiles) {
+		bundleString += file.text;
 	}
 
-	await bundle.close();
 	return bundleString;
+}
+
+function applySimpleTransforms(code: string): string {
+	return code.replace(PATTERN_FILENAME_COMMENT, "\n");
+}
+
+function emitCodeChanges(result: BuildResult, code$: Subject<string>): void {
+	const code = generateBundleCode(result);
+	if (null !== code) {
+		code$.next(applySimpleTransforms(code));
+	}
+}
+
+async function startWatcher(
+	entrypoint: string,
+	code$: Subject<string>,
+): Promise<BuildResult> {
+	const result = await build({
+		...buildConfig,
+		entryPoints: [entrypoint],
+		outdir: "./var/output",
+		write: false,
+		watch: {
+			onRebuild: (
+				error: BuildFailure | null,
+				result: BuildResult | null,
+			) => {
+				if (null === result) {
+					return;
+				}
+				emitCodeChanges(result, code$);
+			},
+		},
+	});
+	emitCodeChanges(result, code$);
+	return result;
 }
 
 export interface CodeWatcher {
@@ -22,34 +59,14 @@ export interface CodeWatcher {
 	close(): Promise<void>;
 }
 
-export function watchCode(entrypoint: InputOption): CodeWatcher {
-	const rollupWatcher = watch({
-		...config,
-		input: entrypoint,
-		watch: {
-			buildDelay: 50,
-			clearScreen: false,
-			skipWrite: true,
-		},
-	});
+export function watchCode(entrypoint: string): CodeWatcher {
 	const code$: Subject<string> = new Subject();
-	rollupWatcher.on("event", async (event) => {
-		if ("BUNDLE_END" === event.code) {
-			const code = await generateBundleCode(event.result);
-			code$.next(code);
-		} else if ("ERROR" === event.code) {
-			code$.error(event.error);
-		}
-		if ("result" in event) {
-			event.result?.close();
-		}
-	});
-
-	rollupWatcher.on("close", () => code$.complete());
+	const resultPromise = startWatcher(entrypoint, code$);
 	return {
 		code$: code$,
 		async close() {
-			rollupWatcher.close();
+			const result = await resultPromise;
+			result.stop;
 		},
 	};
 }
