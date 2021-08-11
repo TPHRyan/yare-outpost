@@ -1,4 +1,7 @@
+import chalk from "chalk";
+
 import { throwIfError } from "../local-util";
+import { createLogger, Logger } from "../logger";
 import { HttpClient } from "../net/http";
 import { WebSocketFactory } from "../net/ws";
 
@@ -10,21 +13,19 @@ import {
 	GameInfo,
 	NotFoundGameInfo,
 } from "./game";
-import { UserSession } from "./session";
 import { GameIdsFromServer } from "./response-models";
+import { UserSession } from "./session";
 
-interface ServerConfig<Domain extends string, Server extends string> {
+interface ServerConfig<Domain extends string> {
 	domain?: Domain;
-	server?: Server;
+	logger?: Logger;
 }
 
-type FullConfig<D extends string, S extends string> = Required<
-	ServerConfig<D, S>
->;
+type FullConfig<D extends string> = Required<ServerConfig<D>>;
 
-const defaultConfig: Readonly<FullConfig<"yare.io", "d1">> = {
+const defaultConfig: Readonly<FullConfig<"yare.io">> = {
 	domain: "yare.io",
-	server: "d1",
+	logger: createLogger("yare-server"),
 };
 
 interface ServerServices {
@@ -37,11 +38,7 @@ type YareHttpEndpoint<
 	D extends string,
 	E extends string,
 > = `${YareHttpUrl<D>}/${E}`;
-type YareWssEndpoint<
-	D extends string,
-	S extends string,
-	E extends string,
-> = `wss://${D}/${S}/${E}`;
+type YareWssEndpoint<D extends string, E extends string> = `wss://${D}/d1/${E}`;
 
 function checkIsValidSession(
 	session: UserSession | null,
@@ -51,35 +48,34 @@ function checkIsValidSession(
 	}
 }
 
-export class Server<Domain extends string, Server extends string> {
+export class Server<Domain extends string> {
 	public readonly domain: Domain;
-	public readonly server: Server;
+	public readonly server: "d1";
 
 	private readonly http: HttpClient;
 	private readonly gameWsFactory: GameWebSocketFactory;
+	private readonly logger: Logger;
 
 	private _games: Record<string, Game> = {};
 	private session: UserSession | null = null;
 
-	constructor(
-		config: ServerConfig<Domain, Server> = {},
-		services: ServerServices,
-	) {
-		const mergedConfig: FullConfig<Domain, Server> = Object.assign(
+	constructor(config: ServerConfig<Domain> = {}, services: ServerServices) {
+		const mergedConfig: FullConfig<Domain> = Object.assign(
 			defaultConfig,
 			config,
 		);
 		this.domain = mergedConfig.domain;
-		this.server = mergedConfig.server;
+		this.server = "d1";
 
 		this.http = services.http;
 		this.gameWsFactory = (gameId: string) =>
 			services.wsFactory(this.getWssEndpoint(gameId));
+		this.logger = mergedConfig.logger;
 	}
 
 	async login(username: string, password: string): Promise<UserSession> {
 		if (this.session) {
-			console.warn(
+			this.logger.warn(
 				"WARNING: Session already exists for this server! These details will be overwritten.",
 			);
 		}
@@ -114,6 +110,15 @@ export class Server<Domain extends string, Server extends string> {
 		}
 		this.session = null;
 		await Promise.all(promises);
+	}
+
+	async onDisconnect(): Promise<string> {
+		this.logger.info(
+			chalk.yellowBright("Received notice to terminate, logging out..."),
+		);
+		await this.logout();
+		this.logger.info("Logged out!");
+		return "Server closed.";
 	}
 
 	async fetchGames(): Promise<Readonly<Game[]>> {
@@ -178,7 +183,7 @@ export class Server<Domain extends string, Server extends string> {
 
 	private getWssEndpoint<Endpoint extends string>(
 		endpoint: Endpoint,
-	): YareWssEndpoint<Domain, Server, Endpoint> {
+	): YareWssEndpoint<Domain, Endpoint> {
 		return `wss://${this.domain}/${this.server}/${endpoint}`;
 	}
 }

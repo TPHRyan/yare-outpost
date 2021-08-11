@@ -2,38 +2,32 @@ import process from "process";
 
 import chalk from "chalk";
 
-import { configure, ConnectionConfig } from "./config";
+import { configure, OutpostConfig } from "./config";
+import { createLogger } from "./logger";
 import { getHttpClient } from "./net/http";
 import { createWebSocket } from "./net/ws";
 import { CodeWatcher, watchCode } from "./watcher";
 import { Server as YareServer } from "./yare";
 
-async function waitForTermination(
-	server: YareServer<string, string>,
-): Promise<string> {
-	return new Promise((resolve) => {
-		process.on("SIGINT", async () => {
-			console.log(
-				chalk.yellowBright(
-					"Received notice to terminate, logging out...",
-				),
-			);
-			await server.logout();
-			console.log("Logged out!");
-			resolve("Server closed.");
-		});
-	});
+const logger = createLogger();
+
+async function waitForTermination(server: YareServer<string>): Promise<string> {
+	return new Promise((resolve) =>
+		process.on("SIGINT", () =>
+			server.onDisconnect().then((message: string) => resolve(message)),
+		),
+	);
 }
 
-async function initServer<Domain extends string, Server extends string>(
-	config: ConnectionConfig<Domain, Server>,
-): Promise<YareServer<Domain, Server>> {
+async function initServer<Domain extends string>(
+	config: OutpostConfig<Domain>,
+): Promise<YareServer<Domain>> {
 	const serverConfig = await configure(config);
 
 	const server = new YareServer(
 		{
 			domain: serverConfig.domain,
-			server: serverConfig.server,
+			logger: serverConfig.logger,
 		},
 		{
 			http: getHttpClient(),
@@ -44,28 +38,33 @@ async function initServer<Domain extends string, Server extends string>(
 	return server;
 }
 
-async function initWatcher<Domain extends string, Server extends string>(
+async function initWatcher<Domain extends string>(
 	entrypoint: string,
-	_server: YareServer<Domain, Server>,
+	_server: YareServer<Domain>,
 ): Promise<CodeWatcher> {
-	console.log(chalk.greenBright("Starting watcher..."));
+	logger.info(chalk.greenBright("Starting watcher..."));
 	const codeWatcher = watchCode(entrypoint);
 	codeWatcher.code$.subscribe({
-		next: (code) => console.log(`Generated code:\n${code}`),
-		error: (err) => console.log(err),
-		complete: () => console.log("Watcher closed."),
+		next: (code) => logger.debug(`Generated code:\n${code}`),
+		error: (err) => logger.error(err),
+		complete: () => logger.debug("Watcher closed."),
 	});
 	return codeWatcher;
 }
 
 async function outpost(): Promise<string> {
-	const server = await initServer({ domain: "yare.io", server: "d1" });
+	logger.setLevel("debug");
+
+	const server = await initServer({
+		domain: "yare.io",
+		logger,
+	});
 	const games = await server.fetchGames();
 
 	if (games.length > 0) {
 		const game = games[0];
-		console.log(chalk.greenBright(`Connecting to game ${game.id}...`));
-		console.log(chalk.yellow("(Not really, not implemented)"));
+		logger.info(chalk.greenBright(`Connecting to game ${game.id}...`));
+		logger.warn(chalk.yellow("(Not really, not implemented)"));
 
 		await initWatcher("./var/code/main.ts", server);
 
@@ -77,7 +76,7 @@ async function outpost(): Promise<string> {
 
 outpost()
 	.then((msg: string) => {
-		console.log(msg);
+		logger.info(msg);
 		process.exit();
 	})
 	.catch((err) => {

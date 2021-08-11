@@ -83,7 +83,15 @@
 		"import/no-mutable-exports": "error",
 		"import/no-unused-modules": "error",
 		"import/no-useless-path-segments": "error",
-		"import/order": "error"
+		"import/order": [
+		  "error",
+		  {
+			"alphabetize": {
+			  "order": "asc"
+			}
+		  }
+		],
+		"no-console": "error"
 	  },
 	  "plugins": [
 		"@typescript-eslint",

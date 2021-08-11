@@ -1,6 +1,7 @@
-import { array, string, Type, UnknownRecord, Validation } from "io-ts";
-import { pipe } from "fp-ts/function";
 import { either } from "fp-ts";
+import { pipe } from "fp-ts/function";
+import { array, string, Type, UnknownRecord, Validation } from "io-ts";
+
 import { mapLastError } from "../local-util";
 
 export type GameIds = string[];

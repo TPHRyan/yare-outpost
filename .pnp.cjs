@@ -62,6 +62,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["husky", "npm:7.0.1"],
             ["io-ts", "virtual:1b0e65b9994d30285196146ecd07aab5d1650cf80f7f064dcd56390148ff010c078a2ee268be129ebda59a129a0d19ea61d80b4bffffc4eae2730168b052310f#npm:2.2.16"],
             ["jest", "virtual:1b0e65b9994d30285196146ecd07aab5d1650cf80f7f064dcd56390148ff010c078a2ee268be129ebda59a129a0d19ea61d80b4bffffc4eae2730168b052310f#npm:27.0.6"],
+            ["loglevel", "npm:1.7.1"],
             ["pinst", "npm:2.1.6"],
             ["prettier", "npm:2.3.2"],
             ["rollup", "npm:2.55.1"],
@@ -2836,6 +2837,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["husky", "npm:7.0.1"],
             ["io-ts", "virtual:1b0e65b9994d30285196146ecd07aab5d1650cf80f7f064dcd56390148ff010c078a2ee268be129ebda59a129a0d19ea61d80b4bffffc4eae2730168b052310f#npm:2.2.16"],
             ["jest", "virtual:1b0e65b9994d30285196146ecd07aab5d1650cf80f7f064dcd56390148ff010c078a2ee268be129ebda59a129a0d19ea61d80b4bffffc4eae2730168b052310f#npm:27.0.6"],
+            ["loglevel", "npm:1.7.1"],
             ["pinst", "npm:2.1.6"],
             ["prettier", "npm:2.3.2"],
             ["rollup", "npm:2.55.1"],
@@ -6890,6 +6892,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/lodash.truncate-npm-4.4.2-bc50fe1663-b463d8a382.zip/node_modules/lodash.truncate/",
           "packageDependencies": [
             ["lodash.truncate", "npm:4.4.2"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["loglevel", [
+        ["npm:1.7.1", {
+          "packageLocation": "./.yarn/cache/loglevel-npm-1.7.1-46e39bd115-715a4ae69a.zip/node_modules/loglevel/",
+          "packageDependencies": [
+            ["loglevel", "npm:1.7.1"]
           ],
           "linkType": "HARD",
         }]

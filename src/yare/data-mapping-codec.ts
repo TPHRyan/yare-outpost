@@ -1,5 +1,5 @@
-import { Type, Validation } from "io-ts";
 import { either } from "fp-ts";
+import { Type, Validation } from "io-ts";
 
 interface ObjectWithData {
 	[key: string]: unknown;

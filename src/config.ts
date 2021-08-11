@@ -13,23 +13,17 @@ const question = util.promisify(
 		rl.question(query, (answer: string) => callback(undefined, answer)),
 );
 
-export interface OutpostConfig<Domain extends string, Server extends string>
-	extends YareServerConfig<Domain, Server> {
+export type OutpostConfig<Domain extends string> = YareServerConfig<Domain>;
+
+export interface OutpostRuntimeConfig<Domain extends string>
+	extends OutpostConfig<Domain> {
 	username: string;
 	password: string;
 }
 
-export interface ConnectionConfig<
-	Domain extends string,
-	Server extends string,
-> {
-	domain: Domain;
-	server: Server;
-}
-
-export async function configure<Domain extends string, Server extends string>(
-	connectionConfig: ConnectionConfig<Domain, Server>,
-): Promise<OutpostConfig<Domain, Server>> {
+export async function configure<Domain extends string>(
+	connectionConfig: OutpostConfig<Domain>,
+): Promise<OutpostRuntimeConfig<Domain>> {
 	const username = await question("Enter your username: ");
 	// TODO: Replace this with something else.
 	//  Don't really want to accept password outside of .env or a secret

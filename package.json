@@ -53,6 +53,7 @@
     "eslint-plugin-prettier": "^3.4.0",
     "fp-ts": "^2.11.1",
     "io-ts": "^2.2.16",
+    "loglevel": "^1.7.1",
     "rollup": "^2.55.1",
     "rxjs": "^7.3.0",
     "ts-node": "^10.1.0",

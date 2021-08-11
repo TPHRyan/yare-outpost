@@ -1,5 +1,5 @@
-import { Errors, Validation, ValidationError } from "io-ts";
 import { isLeft } from "fp-ts/Either";
+import { Errors, Validation, ValidationError } from "io-ts";
 import { PathReporter } from "io-ts/PathReporter";
 
 export function mapLastError(
