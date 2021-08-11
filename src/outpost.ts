@@ -7,7 +7,7 @@ import { createLogger } from "./logger";
 import { getHttpClient } from "./net/http";
 import { createWebSocket } from "./net/ws";
 import { CodeWatcher, watchCode } from "./watcher";
-import { Server as YareServer } from "./yare";
+import { Game, Server as YareServer } from "./yare";
 
 const logger = createLogger();
 
@@ -38,14 +38,18 @@ async function initServer<Domain extends string>(
 	return server;
 }
 
-async function initWatcher<Domain extends string>(
+async function initWatcher(
 	entrypoint: string,
-	_server: YareServer<Domain>,
+	game: Game,
 ): Promise<CodeWatcher> {
 	logger.info(chalk.greenBright("Starting watcher..."));
 	const codeWatcher = watchCode(entrypoint);
 	codeWatcher.code$.subscribe({
-		next: (code) => logger.debug(`Generated code:\n${code}`),
+		next: async (code) => {
+			logger.debug(`Generated code:\n${code}`);
+			await game.sendCode(code);
+			logger.info(`Successfully updated code for game ${game.id}!`);
+		},
 		error: (err) => logger.error(err),
 		complete: () => logger.debug("Watcher closed."),
 	});
@@ -63,10 +67,10 @@ async function outpost(): Promise<string> {
 
 	if (games.length > 0) {
 		const game = games[0];
-		logger.info(chalk.greenBright(`Connecting to game ${game.id}...`));
-		logger.warn(chalk.yellow("(Not really, not implemented)"));
-
-		await initWatcher("./var/code/main.ts", server);
+		logger.info(
+			chalk.greenBright(`Updating code live for game ${game.id}...`),
+		);
+		await initWatcher("./var/code/main.ts", game);
 
 		return await waitForTermination(server);
 	}

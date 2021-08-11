@@ -29,16 +29,14 @@ function getHttpWithLoginResponse(response: UserSession | UserSessionResponse) {
 	return http;
 }
 
-type TestServices<WSSendData = unknown> = ServerServices & {
-	wsFactory: FakeWebSocketFactory<WSSendData>;
+type TestServices = ServerServices & {
+	wsFactory: FakeWebSocketFactory;
 };
 
-function getServices<WSSendData = unknown>(
-	overrides: Partial<TestServices<WSSendData>> = {},
-): TestServices<WSSendData> {
+function getServices(overrides: Partial<TestServices> = {}): TestServices {
 	return {
 		http: overrides.http ?? getMockHttpClient(),
-		wsFactory: overrides.wsFactory ?? getFakeWebSocketFactory<WSSendData>(),
+		wsFactory: overrides.wsFactory ?? getFakeWebSocketFactory(),
 	};
 }
 
@@ -137,7 +135,7 @@ describe("yare server", () => {
 
 	test("should accept sent code", async () => {
 		const http = getHttpWithLoginResponse(fakeSession);
-		const services = getServices<string>({ http });
+		const services = getServices({ http });
 		const server = new Server({}, services);
 		await server.login(username, password);
 
@@ -148,8 +146,12 @@ describe("yare server", () => {
 
 		return new Promise<void>((resolve) => {
 			services.wsFactory.sockets$.pipe(take(1)).subscribe((codeSocket) =>
-				codeSocket.send$.subscribe((code) => {
-					expect(code).toMatchObject({
+				codeSocket.send$.subscribe((codeRequest) => {
+					expect(typeof codeRequest).toBe("string");
+					const parsedRequest = JSON.parse(codeRequest);
+					expect(typeof parsedRequest).toBe("object");
+					expect(parsedRequest).not.toBeNull();
+					expect(parsedRequest).toMatchObject({
 						u_code: codeToSend,
 						u_id: fakeSession.user_id,
 						session_id: fakeSession.session_id,

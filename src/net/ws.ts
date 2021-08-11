@@ -25,10 +25,11 @@ function _createWebSocket(
 		message$,
 		send: util.promisify<unknown, void>(
 			(data: unknown, cb?: (err?: Error) => void) => {
+				const jsonData = JSON.stringify(data);
 				if (webSocket.readyState === WebSocketImpl.CONNECTING) {
-					webSocket.on("open", () => webSocket.send(data, cb));
+					webSocket.on("open", () => webSocket.send(jsonData, cb));
 				} else {
-					webSocket.send(data, cb);
+					webSocket.send(jsonData, cb);
 				}
 			},
 		),
