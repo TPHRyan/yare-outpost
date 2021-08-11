@@ -12,30 +12,10 @@
 - [ ] \[maybe] validate commit message using [pre-git][pre-git] or [commitizen][commitizen]
   with [validate-commit-msg][validate-commit-msg]. This enables other tools, like intelligent release notes.
 
-- [ ] use logging library to show more information during debugging or verbose mode.
+- [x] use logging library to show more information during debugging or verbose mode.
   [debug][debug], [logdown][logdown]
 
-- [ ] show the project's GitHub open issues on demand or on commit using [git-issues][git-issues]
-
-- [ ] setup continuous integration server, like [TravisCI][travis] or [CircleCI][circle] (or wait until you set
-  up [semantic-release][semantic-release] which will set up [TravisCI][travis] for you).
-
-- [ ] [add badges][badges] to the README to make broken unit tests or out of date dependencies visible
-	* ci server badge
-	* published NPM package info [NodeICO][nodeico]
-	* production and dev dependencies being out of date [david-dm][david-dm]
-	* semantic release badge
-	* code quality badges
-	* insecure code or dependencies
-
 - [ ] check module published size and white list only necessary files, [tutorial][module size]
-
-- [ ] setup [semantic-release][semantic-release] to automate publishing and avoid breaking [semver][semver]. This
-  is [important][semver important], but is currently [broken][broken semver] in too many projects. Even this checklist
-  is using semver!
-
-- [ ] avoid surprizes by using exact versions of the top level dependencies. Use [save-exact][save-exact] NPM setting
-  and [exact-semver][exact-semver] to enforce it.
 
 - [ ] setup a script to reliably update out of date dependencies using [next-update][next-update install]
 	- [ ] setup automatic pull requests when newer versions of dependencies appear [greenkeeper.io][greenkeeper]
@@ -45,24 +25,19 @@
 
 - [ ] scan dependencies and code for known security vulnerabilities. [snyk][snyk], [NodeSecurity][NodeSecurity]
 
-- [ ] catch missing or invalid `package.json` values using [grunt-nice-package][grunt-nice-package]
-  or [fixpack][fixpack]
-
-- [ ] write simple installation commands for your module
-
 - [ ] write "quick intro" example showing the main feature of your module
 
 - [ ] add CONTRIBUTING.md file with clear guidelines how others can add new features or fix bugs in your
   module. [Atom editor][atom] and [lodash][lodash] have excellent examples to follow. When GitHub finds a
   CONTRIBUTING.md file it [shows a message][contributing] to anyone opening an issue.
 
-- [ ] generate documentation automatically. [xplain][xplain] is my own tool for JS to HTML/Markdown generation
-
 - [ ] place most of the public API documentation in README file for simple retrieval. This allows other developers to
   find relevant sections right from the command line [manpm][manpm]
   or by looking up `npm home package-name`
 
-- [ ] use a library to output the correct plural forms of words in the user messages [pluralize][pluralize]
+- [ ] set up a proper CLI interface for the `outpost` command
+
+- [ ] include a `help` command for the user to see subcommands and usage
 
 [egghead]: https://egghead.io
 
