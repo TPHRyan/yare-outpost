@@ -1,7 +1,7 @@
 import chalk from "chalk";
 
 import { throwIfError } from "../local-util";
-import { createLogger, Logger } from "../logger";
+import { Logger } from "../logger";
 import { HttpClient } from "../net/http";
 import { WebSocketFactory } from "../net/ws";
 
@@ -19,18 +19,17 @@ import { UserSession } from "./session";
 
 interface ServerConfig<Domain extends string> {
 	domain?: Domain;
-	logger?: Logger;
 }
 
 type FullConfig<D extends string> = Required<ServerConfig<D>>;
 
 const defaultConfig: Readonly<FullConfig<"yare.io">> = {
 	domain: "yare.io",
-	logger: createLogger("yare-server"),
 };
 
 interface ServerServices {
 	http: HttpClient;
+	logger: Logger;
 	wsFactory: WebSocketFactory;
 }
 
@@ -72,7 +71,7 @@ export class Server<Domain extends string> {
 		this.http = services.http;
 		this.gameWsFactory = (gameId: string, metadata: GameMetadata) =>
 			services.wsFactory(this.getWssEndpoint(gameId, metadata.server));
-		this.logger = mergedConfig.logger;
+		this.logger = services.logger;
 	}
 
 	async login(username: string, password: string): Promise<UserSession> {

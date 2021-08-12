@@ -1,5 +1,6 @@
 import { take } from "rxjs";
 
+import { createLogger } from "../logger";
 import { getMockHttpClient } from "../net/http.mocks";
 import { FakeWebSocketFactory, getFakeWebSocketFactory } from "../net/ws.mocks";
 
@@ -34,8 +35,11 @@ type TestServices = ServerServices & {
 };
 
 function getServices(overrides: Partial<TestServices> = {}): TestServices {
+	const logger = createLogger();
+	logger.disableAll();
 	return {
 		http: overrides.http ?? getMockHttpClient(),
+		logger,
 		wsFactory: overrides.wsFactory ?? getFakeWebSocketFactory(),
 	};
 }
