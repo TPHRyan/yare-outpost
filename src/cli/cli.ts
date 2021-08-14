@@ -6,7 +6,7 @@ async function runSubcommand<C extends string>(
 	ctx: EarlyCliContext,
 	subcommand: Subcommand<C>,
 ): Promise<void> {
-	return subcommand([], {
+	return subcommand({
 		...ctx,
 		config: await configure(
 			{

@@ -67,8 +67,8 @@ async function syncCode(ctx: CliContext): Promise<string> {
 }
 
 const syncCodeSubcommand = async (
-	args: string[],
 	ctx: CliContext,
+	_args: string[] = [],
 ): Promise<void> => {
 	const message = await syncCode(ctx);
 	ctx.logger.info(message);

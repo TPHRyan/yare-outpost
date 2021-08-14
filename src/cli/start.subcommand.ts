@@ -3,10 +3,10 @@ import { Subcommand } from "./subcommand";
 import syncCode from "./sync-code.subcommand";
 
 const startSubcommand = async (
-	args: string[],
 	ctx: CliContext,
+	_args: string[] = [],
 ): Promise<void> => {
-	await Promise.all([syncCode([], ctx)]);
+	await Promise.all([syncCode(ctx)]);
 };
 startSubcommand.commandName = "start";
 

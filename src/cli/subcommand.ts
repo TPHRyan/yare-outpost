@@ -3,7 +3,7 @@ import { CliContext } from "./cli-context.model";
 interface Subcommand<Name extends string, Args extends string[] = string[]> {
 	commandName: Name;
 
-	(args: Args, ctx: CliContext): Promise<void>;
+	(ctx: CliContext, args?: Args): Promise<void>;
 }
 
 interface _Subcommands {
