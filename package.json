@@ -1,6 +1,6 @@
 {
   "name": "@paroz-io/yare-outpost",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "For yare.io: An IDE-agnostic tool with live uploads and more",
   "keywords": [
     "yare",
@@ -24,8 +24,7 @@
   },
   "scripts": {
     "outpost": "ts-node src/outpost.ts",
-    "start": "ts-node src/outpost.ts start",
-    "build": "ts-node src/build.ts",
+    "outpost-start": "ts-node src/outpost.ts start",
     "lint": "eslint src",
     "test": "jest",
     "postinstall": "husky install",
@@ -35,6 +34,7 @@
   "dependencies": {
     "@types/node": "^16.4.12",
     "@types/ws": "^7.4.7",
+    "@types/yargs": "^17.0.2",
     "@typescript-eslint/eslint-plugin": "^4.29.1",
     "@typescript-eslint/parser": "^4.29.1",
     "axios": "^0.21.1",
@@ -54,7 +54,8 @@
     "ts-node": "^10.1.0",
     "tslib": "^2.3.0",
     "typescript": "^4.3.5",
-    "ws": "^8.0.0"
+    "ws": "^8.0.0",
+    "yargs": "^17.1.1"
   },
   "devDependencies": {
     "@jest/types": "^27.0.6",

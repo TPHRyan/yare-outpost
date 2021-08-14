@@ -75,5 +75,7 @@ const syncCodeSubcommand = async (
 	process.exit();
 };
 syncCodeSubcommand.commandName = "sync-code";
+syncCodeSubcommand.description =
+	"watch for code changes and sync code with yare.io";
 
-export default syncCodeSubcommand as Subcommand<"sync-code">;
+export default syncCodeSubcommand as Subcommand;

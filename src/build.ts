@@ -1,7 +1,7 @@
 import chalk from "chalk";
 import { build } from "esbuild";
 
-import buildConfig from "../build.config";
+import buildConfig from "./build.config";
 import { createLogger } from "./logger";
 
 const logger = createLogger("build");

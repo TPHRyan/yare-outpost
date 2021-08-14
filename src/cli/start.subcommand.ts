@@ -9,5 +9,6 @@ const startSubcommand = async (
 	await Promise.all([syncCode(ctx)]);
 };
 startSubcommand.commandName = "start";
+startSubcommand.description = "start (by default) all available services";
 
-export default startSubcommand as Subcommand<"start">;
+export default startSubcommand as Subcommand;

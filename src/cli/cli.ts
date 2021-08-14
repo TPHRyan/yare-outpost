@@ -1,38 +1,34 @@
 import { configure } from "../config";
 import { EarlyCliContext } from "./cli-context.model";
-import { Subcommand, Subcommands } from "./subcommand";
+import { Subcommand, SubcommandArgs } from "./subcommand";
 
-async function runSubcommand<C extends string>(
+async function runSubcommand<Args extends SubcommandArgs>(
+	args: Args,
 	ctx: EarlyCliContext,
-	subcommand: Subcommand<C>,
+	subcommand: Subcommand<Args>,
 ): Promise<void> {
-	return subcommand({
-		...ctx,
-		config: await configure(
-			{
-				domain: "yare.io",
-			},
-			ctx,
-		),
-	});
+	return subcommand(
+		{
+			...ctx,
+			config: await configure(
+				{
+					domain: "yare.io",
+				},
+				ctx,
+			),
+		},
+		args,
+	);
 }
 
 export class UnknownCommandError extends Error {}
 
-export function outpost<C extends string>(
+export function outpost<Args extends SubcommandArgs>(
+	args: Args,
 	ctx: EarlyCliContext,
-	subcommands: Subcommands<C>,
+	subcommand: Subcommand<Args>,
 ): void {
-	ctx.logger.setLevel("debug");
-
-	const chosenCommand = "start";
-	const subcommand = subcommands[chosenCommand];
-	if (undefined === subcommand) {
-		throw new UnknownCommandError(
-			`Command "${chosenCommand}" does not exist!`,
-		);
-	}
-	runSubcommand(ctx, subcommand)
+	runSubcommand(args, ctx, subcommand)
 		.then()
 		.catch((reason) => {
 			throw reason;

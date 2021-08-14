@@ -1,7 +1,7 @@
 import { build, BuildFailure, BuildResult } from "esbuild";
 import { Observable, Subject } from "rxjs";
 
-import buildConfig from "../build.config";
+import buildConfig from "./build.config";
 
 const PATTERN_FILENAME_COMMENT = /\n\s*\/\/ .*?\n/m;
 

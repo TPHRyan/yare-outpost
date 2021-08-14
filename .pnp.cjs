@@ -39,6 +39,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/jest", "npm:26.0.24"],
             ["@types/node", "npm:16.4.12"],
             ["@types/ws", "npm:7.4.7"],
+            ["@types/yargs", "npm:17.0.2"],
             ["@typescript-eslint/eslint-plugin", "virtual:1b0e65b9994d30285196146ecd07aab5d1650cf80f7f064dcd56390148ff010c078a2ee268be129ebda59a129a0d19ea61d80b4bffffc4eae2730168b052310f#npm:4.29.1"],
             ["@typescript-eslint/parser", "virtual:1b0e65b9994d30285196146ecd07aab5d1650cf80f7f064dcd56390148ff010c078a2ee268be129ebda59a129a0d19ea61d80b4bffffc4eae2730168b052310f#npm:4.29.1"],
             ["axios", "npm:0.21.1"],
@@ -63,7 +64,8 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["ts-node", "virtual:1b0e65b9994d30285196146ecd07aab5d1650cf80f7f064dcd56390148ff010c078a2ee268be129ebda59a129a0d19ea61d80b4bffffc4eae2730168b052310f#npm:10.1.0"],
             ["tslib", "npm:2.3.0"],
             ["typescript", "patch:typescript@npm%3A4.3.5#~builtin<compat/typescript>::version=4.3.5&hash=d8b4e7"],
-            ["ws", "virtual:1b0e65b9994d30285196146ecd07aab5d1650cf80f7f064dcd56390148ff010c078a2ee268be129ebda59a129a0d19ea61d80b4bffffc4eae2730168b052310f#npm:8.0.0"]
+            ["ws", "virtual:1b0e65b9994d30285196146ecd07aab5d1650cf80f7f064dcd56390148ff010c078a2ee268be129ebda59a129a0d19ea61d80b4bffffc4eae2730168b052310f#npm:8.0.0"],
+            ["yargs", "npm:17.1.1"]
           ],
           "linkType": "SOFT",
         }]
@@ -1200,6 +1202,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/jest", "npm:26.0.24"],
             ["@types/node", "npm:16.4.12"],
             ["@types/ws", "npm:7.4.7"],
+            ["@types/yargs", "npm:17.0.2"],
             ["@typescript-eslint/eslint-plugin", "virtual:1b0e65b9994d30285196146ecd07aab5d1650cf80f7f064dcd56390148ff010c078a2ee268be129ebda59a129a0d19ea61d80b4bffffc4eae2730168b052310f#npm:4.29.1"],
             ["@typescript-eslint/parser", "virtual:1b0e65b9994d30285196146ecd07aab5d1650cf80f7f064dcd56390148ff010c078a2ee268be129ebda59a129a0d19ea61d80b4bffffc4eae2730168b052310f#npm:4.29.1"],
             ["axios", "npm:0.21.1"],
@@ -1224,7 +1227,8 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["ts-node", "virtual:1b0e65b9994d30285196146ecd07aab5d1650cf80f7f064dcd56390148ff010c078a2ee268be129ebda59a129a0d19ea61d80b4bffffc4eae2730168b052310f#npm:10.1.0"],
             ["tslib", "npm:2.3.0"],
             ["typescript", "patch:typescript@npm%3A4.3.5#~builtin<compat/typescript>::version=4.3.5&hash=d8b4e7"],
-            ["ws", "virtual:1b0e65b9994d30285196146ecd07aab5d1650cf80f7f064dcd56390148ff010c078a2ee268be129ebda59a129a0d19ea61d80b4bffffc4eae2730168b052310f#npm:8.0.0"]
+            ["ws", "virtual:1b0e65b9994d30285196146ecd07aab5d1650cf80f7f064dcd56390148ff010c078a2ee268be129ebda59a129a0d19ea61d80b4bffffc4eae2730168b052310f#npm:8.0.0"],
+            ["yargs", "npm:17.1.1"]
           ],
           "linkType": "SOFT",
         }]
@@ -1448,6 +1452,14 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/@types-yargs-npm-16.0.4-7aaef7d6c8-caa21d2c95.zip/node_modules/@types/yargs/",
           "packageDependencies": [
             ["@types/yargs", "npm:16.0.4"],
+            ["@types/yargs-parser", "npm:20.2.1"]
+          ],
+          "linkType": "HARD",
+        }],
+        ["npm:17.0.2", {
+          "packageLocation": "./.yarn/cache/@types-yargs-npm-17.0.2-75e73b70c3-6f4600d3b7.zip/node_modules/@types/yargs/",
+          "packageDependencies": [
+            ["@types/yargs", "npm:17.0.2"],
             ["@types/yargs-parser", "npm:20.2.1"]
           ],
           "linkType": "HARD",
@@ -7154,6 +7166,20 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/yargs-npm-16.2.0-547873d425-b14afbb51e.zip/node_modules/yargs/",
           "packageDependencies": [
             ["yargs", "npm:16.2.0"],
+            ["cliui", "npm:7.0.4"],
+            ["escalade", "npm:3.1.1"],
+            ["get-caller-file", "npm:2.0.5"],
+            ["require-directory", "npm:2.1.1"],
+            ["string-width", "npm:4.2.2"],
+            ["y18n", "npm:5.0.8"],
+            ["yargs-parser", "npm:20.2.9"]
+          ],
+          "linkType": "HARD",
+        }],
+        ["npm:17.1.1", {
+          "packageLocation": "./.yarn/cache/yargs-npm-17.1.1-484d22d0f7-b05a946793.zip/node_modules/yargs/",
+          "packageDependencies": [
+            ["yargs", "npm:17.1.1"],
             ["cliui", "npm:7.0.4"],
             ["escalade", "npm:3.1.1"],
             ["get-caller-file", "npm:2.0.5"],
