@@ -25,7 +25,7 @@ export function outpost<C extends string>(
 ): void {
 	ctx.logger.setLevel("debug");
 
-	const chosenCommand = "start";
+	const chosenCommand = "sync-code";
 	const subcommand = subcommands[chosenCommand];
 	if (undefined === subcommand) {
 		throw new UnknownCommandError(

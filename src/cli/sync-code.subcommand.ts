@@ -47,7 +47,7 @@ async function initWatcher(
 	return codeWatcher;
 }
 
-async function start(ctx: CliContext): Promise<string> {
+async function syncCode(ctx: CliContext): Promise<string> {
 	const logger = ctx.logger;
 
 	const server = await initServer(ctx);
@@ -66,11 +66,11 @@ async function start(ctx: CliContext): Promise<string> {
 	return chalk.yellowBright("No games found, exiting...");
 }
 
-const startSubcommand = async (
+const syncCodeSubcommand = async (
 	args: string[],
 	ctx: CliContext,
 ): Promise<void> => {
-	start(ctx)
+	syncCode(ctx)
 		.then((msg: string) => {
 			ctx.logger.info(msg);
 			process.exit();
@@ -82,6 +82,6 @@ const startSubcommand = async (
 			throw new Error(err);
 		});
 };
-startSubcommand.commandName = "start";
+syncCodeSubcommand.commandName = "sync-code";
 
-export default startSubcommand as Subcommand<"start">;
+export default syncCodeSubcommand as Subcommand<"sync-code">;
