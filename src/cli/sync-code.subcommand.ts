@@ -70,17 +70,9 @@ const syncCodeSubcommand = async (
 	args: string[],
 	ctx: CliContext,
 ): Promise<void> => {
-	syncCode(ctx)
-		.then((msg: string) => {
-			ctx.logger.info(msg);
-			process.exit();
-		})
-		.catch((err) => {
-			if (err instanceof Error) {
-				throw err;
-			}
-			throw new Error(err);
-		});
+	const message = await syncCode(ctx);
+	ctx.logger.info(message);
+	process.exit();
 };
 syncCodeSubcommand.commandName = "sync-code";
 

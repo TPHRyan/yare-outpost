@@ -23,7 +23,8 @@
     "url": "https://github.com/TPHRyan/yare-outpost"
   },
   "scripts": {
-    "serve": "ts-node src/outpost.ts",
+    "outpost": "ts-node src/outpost.ts",
+    "start": "ts-node src/outpost.ts start",
     "build": "ts-node src/build.ts",
     "lint": "eslint src",
     "test": "jest",

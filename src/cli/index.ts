@@ -1,7 +1,9 @@
+import start from "./start.subcommand";
 import { Subcommands } from "./subcommand";
 import syncCode from "./sync-code.subcommand";
 
 const defaultSubcommands: Subcommands = {
+	start: start,
 	"sync-code": syncCode,
 };
 
