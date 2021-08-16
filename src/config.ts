@@ -1,7 +1,7 @@
 import readline from "readline";
 import util from "util";
 
-import { EarlyCliContext } from "./cli/cli-context.model";
+import { EarlyCliContext } from "./cli";
 import { ServerConfig as YareServerConfig } from "./yare/server";
 
 interface QuestionFn {
@@ -23,28 +23,34 @@ function makeQuestion(ctx: EarlyCliContext): QuestionFn {
 	return question as QuestionFn;
 }
 
+export interface UserCredentials {
+	username: string;
+	password: string;
+}
+
 export type OutpostConfig<Domain extends string> = YareServerConfig<Domain>;
 
 export interface OutpostRuntimeConfig<Domain extends string>
 	extends OutpostConfig<Domain> {
-	username: string;
-	password: string;
+	getCredentials(): UserCredentials | Promise<UserCredentials>;
 }
 
 export async function configure<Domain extends string>(
 	connectionConfig: OutpostConfig<Domain>,
 	ctx: EarlyCliContext,
 ): Promise<OutpostRuntimeConfig<Domain>> {
-	const question = makeQuestion(ctx);
-	const username = await question("Enter your username: ");
-	// TODO: Replace this with something else.
-	//  Don't really want to accept password outside of .env or a secret
-	const password = await question("Enter your password: ");
-	question.close();
-
 	return {
 		...connectionConfig,
-		username,
-		password,
+		getCredentials: async (): Promise<UserCredentials> => {
+			const question = makeQuestion(ctx);
+			// TODO: Replace this with something else.
+			//  Don't really want to accept password outside of .env or a secret
+			const credentials = {
+				username: await question("Enter your username: "),
+				password: await question("Enter your password: "),
+			};
+			question.close();
+			return credentials;
+		},
 	};
 }

@@ -1,6 +1,5 @@
-import { CliContext } from "./cli-context.model";
-import { Subcommand } from "./subcommand";
-import syncCode from "./sync-code.subcommand";
+import { CliContext, Subcommand } from "./cli";
+import syncCode from "./sync-code";
 
 const startSubcommand = async (
 	ctx: CliContext,

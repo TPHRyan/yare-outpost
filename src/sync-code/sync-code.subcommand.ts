@@ -1,14 +1,12 @@
 import process from "process";
 import chalk from "chalk";
 
+import { CliContext, Subcommand } from "../cli";
 import { Logger } from "../logger";
 import { getHttpClient } from "../net/http";
 import { createWebSocket } from "../net/ws";
-import { CodeWatcher, watchCode } from "../watcher";
 import { Game, Server as YareServer } from "../yare";
-
-import { CliContext } from "./cli-context.model";
-import { Subcommand } from "./subcommand";
+import { CodeWatcher, watchCode } from "./watcher";
 
 async function initServer<Domain extends string>(
 	ctx: CliContext<Domain>,
@@ -24,7 +22,8 @@ async function initServer<Domain extends string>(
 			wsFactory: createWebSocket,
 		},
 	);
-	await server.login(config.username, config.password);
+	const { username, password } = await config.getCredentials();
+	await server.login(username, password);
 	return server;
 }
 

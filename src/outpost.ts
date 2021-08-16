@@ -1,13 +1,13 @@
 import process from "process";
 
 import chalk from "chalk";
-
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
-import { defaultSubcommands, outpost } from "./cli";
-import { EarlyCliContext } from "./cli/cli-context.model";
-import { Subcommands } from "./cli/subcommand";
+
+import { EarlyCliContext, outpost, Subcommands } from "./cli";
 import { createLogger } from "./logger";
+import start from "./start.subcommand";
+import syncCode from "./sync-code";
 
 async function processArgs(
 	argv: string[],
@@ -44,7 +44,10 @@ const stop = new Promise<void>((resolve) =>
 processArgs(
 	process.argv,
 	{ logger, stdin: process.stdin, stdout: process.stdout, stop },
-	defaultSubcommands,
+	{
+		start: start,
+		"sync-code": syncCode,
+	},
 )
 	.then()
 	.catch((e) => {
