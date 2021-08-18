@@ -1,6 +1,6 @@
 import { CliContext, Subcommand } from "../cli";
 import { createWebSocketServer } from "../net/ws";
-import { CodeChangedEvent } from "../sync-code/events";
+import { CodeChangedEvent } from "../watcher/events";
 
 const serveClientsSubcommand = async (
 	ctx: CliContext,

@@ -5,8 +5,8 @@ import { CliContext, Subcommand } from "../cli";
 import { Logger } from "../logger";
 import { getHttpClient } from "../net/http";
 import { createWebSocket } from "../net/ws";
+import { CodeWatcher, watchCode } from "../watcher/watcher";
 import { Game, Server as YareServer } from "../yare";
-import { CodeWatcher, watchCode } from "./watcher";
 
 async function initServer<Domain extends string>(
 	ctx: CliContext<Domain>,
@@ -33,7 +33,7 @@ async function initWatcher(
 	logger: Logger,
 ): Promise<CodeWatcher> {
 	logger.info(chalk.greenBright("Starting watcher..."));
-	const codeWatcher = watchCode(entrypoint);
+	const codeWatcher = watchCode(entrypoint, "./var/output");
 	codeWatcher.code$.subscribe({
 		next: async (code) => {
 			logger.debug(`Generated code:\n${code}`);

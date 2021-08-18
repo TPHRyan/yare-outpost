@@ -1,7 +1,9 @@
 import { build, BuildFailure, BuildResult } from "esbuild";
 import { Observable, Subject } from "rxjs";
 
-import buildConfig from "./build.config";
+import { EventStream } from "../events";
+import buildConfig from "../sync-code/build.config";
+import { CodeChangedEvent } from "./events";
 
 const PATTERN_FILENAME_COMMENT = /\n\s*\/\/ .*?\n/m;
 
@@ -21,21 +23,34 @@ function applySimpleTransforms(code: string): string {
 	return code.replace(PATTERN_FILENAME_COMMENT, "\n");
 }
 
-function emitCodeChanges(result: BuildResult, code$: Subject<string>): void {
+function emitCodeChanges(
+	result: BuildResult,
+	code$: Subject<string>,
+	events$?: EventStream,
+): void {
 	const code = generateBundleCode(result);
 	if (null !== code) {
+		const event: CodeChangedEvent = {
+			type: "codeChanged",
+			payload: {
+				code,
+			},
+		};
+		events$?.next(event);
 		code$.next(applySimpleTransforms(code));
 	}
 }
 
 async function startWatcher(
 	entrypoint: string,
+	outputDir: string,
 	code$: Subject<string>,
+	events$?: EventStream,
 ): Promise<BuildResult> {
 	const result = await build({
 		...buildConfig,
 		entryPoints: [entrypoint],
-		outdir: "./var/output",
+		outdir: outputDir,
 		write: false,
 		watch: {
 			onRebuild: (
@@ -45,11 +60,11 @@ async function startWatcher(
 				if (null === result) {
 					return;
 				}
-				emitCodeChanges(result, code$);
+				emitCodeChanges(result, code$, events$);
 			},
 		},
 	});
-	emitCodeChanges(result, code$);
+	emitCodeChanges(result, code$, events$);
 	return result;
 }
 
@@ -59,14 +74,18 @@ export interface CodeWatcher {
 	close(): Promise<void>;
 }
 
-export function watchCode(entrypoint: string): CodeWatcher {
-	const code$: Subject<string> = new Subject();
-	const resultPromise = startWatcher(entrypoint, code$);
+export function watchCode(
+	entrypoint: string,
+	outputDir: string,
+	events$?: EventStream,
+): CodeWatcher {
+	const code$ = new Subject<string>();
+	const resultPromise = startWatcher(entrypoint, outputDir, code$, events$);
 	return {
-		code$: code$,
+		code$,
 		async close() {
 			const result = await resultPromise;
-			result.stop;
+			result.stop?.();
 		},
 	};
 }
