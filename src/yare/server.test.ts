@@ -2,7 +2,7 @@ import { take } from "rxjs";
 
 import { createLogger } from "../logger";
 import { getMockHttpClient } from "../net/http.mocks";
-import { FakeWebSocketFactory, getFakeWebSocketFactory } from "../net/ws.mocks";
+import { FakeWebSocketFactory, getFakeWebSocketFactory } from "../net/ws/mocks";
 
 import { Server, ServerServices } from "./server";
 import { UserSession } from "./session";

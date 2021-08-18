@@ -1,7 +1,8 @@
 import util from "util";
 
-import { Observable, Subject } from "rxjs";
 import WebSocketImpl from "ws";
+
+import { createMessageObservable, WebSocket } from "./common";
 
 function _createWebSocket(
 	url: string,
@@ -14,15 +15,8 @@ function _createWebSocket(
 			...headers,
 		},
 	});
-	let messageSubject: Subject<WebSocketData> | null = null;
-	const message$ = new Observable<WebSocketData>((subscriber) => {
-		if (null === messageSubject) {
-			messageSubject = createMessageSubject(webSocket);
-		}
-		messageSubject.subscribe(subscriber);
-	});
 	return {
-		message$,
+		message$: createMessageObservable(webSocket),
 		send: util.promisify<unknown, void>(
 			(data: unknown, cb?: (err?: Error) => void) => {
 				const jsonData = JSON.stringify(data);
@@ -38,26 +32,6 @@ function _createWebSocket(
 			webSocket.on("close", () => resolve()),
 		),
 	};
-}
-
-function createMessageSubject(
-	webSocket: WebSocketImpl,
-): Subject<WebSocketData> {
-	const messageSubject: Subject<WebSocketData> = new Subject();
-	webSocket.on("message", (data: WebSocketData) => messageSubject.next(data));
-	return messageSubject;
-}
-
-export type WebSocketData = Exclude<WebSocketImpl.Data, ArrayBuffer>;
-
-export interface WebSocket {
-	message$: Observable<WebSocketData>;
-
-	send(data: unknown): Promise<void>;
-
-	close(code?: number, data?: string): void;
-
-	closed: Promise<void>;
 }
 
 export type WebSocketFactory = (

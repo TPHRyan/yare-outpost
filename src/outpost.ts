@@ -5,7 +5,9 @@ import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 
 import { EarlyCliContext, outpost, Subcommands } from "./cli";
+import { createEventStream } from "./events";
 import { createLogger } from "./logger";
+import serveClients from "./serve-clients";
 import start from "./start.subcommand";
 import syncCode from "./sync-code";
 
@@ -43,8 +45,15 @@ const stop = new Promise<void>((resolve) =>
 
 processArgs(
 	process.argv,
-	{ logger, stdin: process.stdin, stdout: process.stdout, stop },
 	{
+		events$: createEventStream(),
+		logger,
+		stdin: process.stdin,
+		stdout: process.stdout,
+		stop,
+	},
+	{
+		"serve-clients": serveClients,
 		start: start,
 		"sync-code": syncCode,
 	},

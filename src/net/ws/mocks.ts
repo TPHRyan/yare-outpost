@@ -1,6 +1,7 @@
 import { Observable, ReplaySubject, Subject } from "rxjs";
 
-import { WebSocket, WebSocketData, WebSocketFactory } from "./ws";
+import { WebSocketFactory } from "./client";
+import { WebSocket, WebSocketData } from "./common";
 
 export interface FakeWebSocket extends WebSocket {
 	message$: Subject<WebSocketData>;
