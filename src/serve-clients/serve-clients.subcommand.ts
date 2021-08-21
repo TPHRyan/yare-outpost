@@ -1,5 +1,5 @@
 import { CliContext, Subcommand } from "../cli";
-import { createWebSocketServer } from "../net/ws";
+import { createWebSocketServer, WebSocket } from "../net/ws";
 import { CodeChangedEvent } from "../watcher/events";
 
 const serveClientsSubcommand = async (
@@ -8,17 +8,20 @@ const serveClientsSubcommand = async (
 ): Promise<void> => {
 	ctx.logger.info("Serving browser clients...");
 	const server = createWebSocketServer(8083);
+	const connections: WebSocket[] = [];
 	server.connection$.subscribe(async (webSocket) => {
-		ctx.events$.subscribeTo("codeChanged", {
+		connections.push(webSocket);
+		const subscription = ctx.events$.subscribeTo("codeChanged", {
 			next: (event?: CodeChangedEvent) => {
 				if (event) {
 					webSocket.send(event).then();
 				}
 			},
 		});
-		webSocket.close();
+		webSocket.closed.then(() => subscription.unsubscribe());
 	});
 	await ctx.stop;
+	connections.forEach((connection) => connection.close());
 	server.close();
 };
 serveClientsSubcommand.commandName = "serve-clients";

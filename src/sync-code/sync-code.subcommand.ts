@@ -2,11 +2,9 @@ import process from "process";
 import chalk from "chalk";
 
 import { CliContext, Subcommand } from "../cli";
-import { Logger } from "../logger";
 import { getHttpClient } from "../net/http";
 import { createWebSocket } from "../net/ws";
-import { CodeWatcher, watchCode } from "../watcher/watcher";
-import { Game, Server as YareServer } from "../yare";
+import { Server as YareServer } from "../yare";
 
 async function initServer<Domain extends string>(
 	ctx: CliContext<Domain>,
@@ -27,29 +25,6 @@ async function initServer<Domain extends string>(
 	return server;
 }
 
-async function initWatcher(
-	entrypoint: string,
-	games: readonly Game[],
-	logger: Logger,
-): Promise<CodeWatcher> {
-	logger.info(chalk.greenBright("Starting watcher..."));
-	const codeWatcher = watchCode(entrypoint, "./var/output");
-	codeWatcher.code$.subscribe({
-		next: async (code) => {
-			logger.debug(`Generated code:\n${code}`);
-			if (games.length > 0) {
-				await Promise.all(games.map((game) => game.sendCode(code)));
-				logger.info(`Successfully updated code for all games!`);
-			} else {
-				logger.info(`Code change detected!`);
-			}
-		},
-		error: (err) => logger.error(err),
-		complete: () => logger.debug("Watcher closed."),
-	});
-	return codeWatcher;
-}
-
 async function syncCode(ctx: CliContext): Promise<string> {
 	const logger = ctx.logger;
 
@@ -65,7 +40,17 @@ async function syncCode(ctx: CliContext): Promise<string> {
 		),
 	);
 
-	await initWatcher("./var/code/main.ts", games, logger);
+	ctx.code$.subscribe({
+		next: async (code) => {
+			logger.debug(`Generated code:\n${code}`);
+			if (games.length > 0) {
+				await Promise.all(games.map((game) => game.sendCode(code)));
+				logger.info(`Successfully updated code for all games!`);
+			} else {
+				logger.info(`Code change detected!`);
+			}
+		},
+	});
 
 	await ctx.stop;
 	return await server.onDisconnect();
