@@ -29,7 +29,7 @@ async function initServer<Domain extends string>(
 
 async function initWatcher(
 	entrypoint: string,
-	game: Game,
+	games: readonly Game[],
 	logger: Logger,
 ): Promise<CodeWatcher> {
 	logger.info(chalk.greenBright("Starting watcher..."));
@@ -37,8 +37,12 @@ async function initWatcher(
 	codeWatcher.code$.subscribe({
 		next: async (code) => {
 			logger.debug(`Generated code:\n${code}`);
-			await game.sendCode(code);
-			logger.info(`Successfully updated code for game ${game.id}!`);
+			if (games.length > 0) {
+				await Promise.all(games.map((game) => game.sendCode(code)));
+				logger.info(`Successfully updated code for all games!`);
+			} else {
+				logger.info(`Code change detected!`);
+			}
 		},
 		error: (err) => logger.error(err),
 		complete: () => logger.debug("Watcher closed."),
@@ -52,17 +56,19 @@ async function syncCode(ctx: CliContext): Promise<string> {
 	const server = await initServer(ctx);
 	const games = await server.fetchGames();
 
-	if (games.length > 0) {
-		const game = games[0];
-		logger.info(
-			chalk.greenBright(`Updating code live for game ${game.id}...`),
-		);
-		await initWatcher("./var/code/main.ts", game, logger);
+	const gameIds = games.map((game) => game.id);
+	logger.info(
+		chalk.greenBright(
+			gameIds.length > 0
+				? `Updating code live for games ${JSON.stringify(gameIds)}...`
+				: "Watching for code changes...",
+		),
+	);
 
-		await ctx.stop;
-		return await server.onDisconnect();
-	}
-	return chalk.yellowBright("No games found, exiting...");
+	await initWatcher("./var/code/main.ts", games, logger);
+
+	await ctx.stop;
+	return await server.onDisconnect();
 }
 
 const syncCodeSubcommand = async (
