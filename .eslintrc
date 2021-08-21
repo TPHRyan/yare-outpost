@@ -97,6 +97,15 @@
 		"@typescript-eslint",
 		"prettier"
 	  ]
+	},
+	{
+	  "files": [
+		"scripts/*.js"
+	  ],
+	  "env": {
+		"browser": true,
+		"es6": true
+	  }
 	}
   ]
 }
